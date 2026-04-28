@@ -69,4 +69,8 @@ temp/
 .env
 .env.local
 
-
+# AI & Cursor Rules
+.cursor/
+.cursorrules
+.gemini/
+.ai/
