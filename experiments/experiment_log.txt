@@ -1,0 +1,954 @@
+2026-03-16 00:22:01.461 | INFO     | __main__:__init__:183 - Experiment runner initialized: 15 trials × 3 faults × 3 agents = 135 total trials
+2026-03-16 00:22:01.462 | INFO     | __main__:run_experiment:317 - ======================================================================
+2026-03-16 00:22:01.462 | INFO     | __main__:run_experiment:318 - STARTING EXPERIMENTAL COMPARISON
+2026-03-16 00:22:01.462 | INFO     | __main__:run_experiment:319 - ======================================================================
+2026-03-16 00:22:01.462 | INFO     | __main__:run_experiment:323 - Generated 100 training samples
+2026-03-16 00:22:01.462 | INFO     | src.baselines.rule_based_agent:__init__:53 - Rule-based agent rule-baseline initialized
+2026-03-16 00:22:01.462 | INFO     | src.baselines.aif_no_gate_agent:__init__:61 - AIF-no-gate agent aif-no-gate-baseline initialized (NO uncertainty gating)
+2026-03-16 00:22:01.465 | INFO     | src.aif.bayesian_network:learn_structure:170 - Learning BN structure with 100 samples, 5 variables
+  0%|          | 0/1000000 [00:00<?, ?it/s]  0%|          | 3/1000000 [00:00<2:30:56, 110.42it/s]
+2026-03-16 00:22:01.501 | INFO     | src.aif.bayesian_network:learn_structure:185 - Learned DAG with 3 edges
+WARNING:pgmpy:Replacing existing CPD for network_quality
+WARNING:pgmpy:Replacing existing CPD for delay
+WARNING:pgmpy:Replacing existing CPD for cpu
+WARNING:pgmpy:Replacing existing CPD for slo_violated
+2026-03-16 00:22:01.509 | INFO     | src.aif.bayesian_network:update_parameters:224 - Updated model parameters with 100 new samples
+2026-03-16 00:22:01.509 | INFO     | __main__:run_experiment:333 - Training AIF-based agents...
+2026-03-16 00:22:01.510 | INFO     | src.baselines.aif_no_gate_agent:train:67 - Training AIF-no-gate agent with 100 samples...
+2026-03-16 00:22:01.510 | INFO     | src.aif.bayesian_network:learn_structure:170 - Learning BN structure with 100 samples, 5 variables
+  0%|          | 0/1000000 [00:00<?, ?it/s]  0%|          | 3/1000000 [00:00<1:26:18, 193.11it/s]
+2026-03-16 00:22:01.526 | INFO     | src.aif.bayesian_network:learn_structure:185 - Learned DAG with 3 edges
+WARNING:pgmpy:Replacing existing CPD for network_quality
+WARNING:pgmpy:Replacing existing CPD for delay
+WARNING:pgmpy:Replacing existing CPD for cpu
+WARNING:pgmpy:Replacing existing CPD for slo_violated
+2026-03-16 00:22:01.533 | INFO     | src.aif.bayesian_network:update_parameters:224 - Updated model parameters with 100 new samples
+2026-03-16 00:22:01.533 | SUCCESS  | src.baselines.aif_no_gate_agent:train:79 - AIF-no-gate agent trained successfully
+2026-03-16 00:22:01.533 | SUCCESS  | __main__:run_experiment:336 - All agents ready
+2026-03-16 00:22:01.533 | INFO     | __main__:run_experiment:342 - 
+======================================================================
+2026-03-16 00:22:01.533 | INFO     | __main__:run_experiment:343 - TESTING: RULE_BASED
+2026-03-16 00:22:01.534 | INFO     | __main__:run_experiment:344 - ======================================================================
+2026-03-16 00:22:01.534 | INFO     | __main__:run_experiment:351 - 
+Fault type: network_drop
+2026-03-16 00:22:01.534 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 1: rule_based on network_drop
+2026-03-16 00:22:01.534 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=58.9%, Network=6.6Mbps, Delay=109.9ms
+2026-03-16 00:22:01.534 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:01.534 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 1 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:01.534 | INFO     | __main__:run_single_trial:304 - Trial 1 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.1ms
+2026-03-16 00:22:01.637 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 2: rule_based on network_drop
+2026-03-16 00:22:01.637 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=86.2%, Memory=66.0%, Network=5.0Mbps, Delay=157.2ms
+2026-03-16 00:22:01.638 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (86.2%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:01.638 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 2 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:01.638 | INFO     | __main__:run_single_trial:304 - Trial 2 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.5ms
+2026-03-16 00:22:01.743 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 3: rule_based on network_drop
+2026-03-16 00:22:01.744 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=67.5%, Network=5.0Mbps, Delay=178.1ms
+2026-03-16 00:22:01.744 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:01.744 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 3 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:01.744 | INFO     | __main__:run_single_trial:304 - Trial 3 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.3ms
+2026-03-16 00:22:01.845 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 4: rule_based on network_drop
+2026-03-16 00:22:01.845 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=67.1%, Network=5.0Mbps, Delay=155.5ms
+2026-03-16 00:22:01.845 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:01.845 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 4 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:01.845 | INFO     | __main__:run_single_trial:304 - Trial 4 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.2ms
+2026-03-16 00:22:01.950 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 5: rule_based on network_drop
+2026-03-16 00:22:01.951 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=99.1%, Memory=59.3%, Network=5.0Mbps, Delay=138.4ms
+2026-03-16 00:22:01.951 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (99.1%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:01.951 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 5 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:01.952 | INFO     | __main__:run_single_trial:304 - Trial 5 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.4ms
+2026-03-16 00:22:02.056 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 6: rule_based on network_drop
+2026-03-16 00:22:02.056 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=62.9%, Network=5.0Mbps, Delay=190.2ms
+2026-03-16 00:22:02.057 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.057 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 6 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.057 | INFO     | __main__:run_single_trial:304 - Trial 6 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.3ms
+2026-03-16 00:22:02.162 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 7: rule_based on network_drop
+2026-03-16 00:22:02.162 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=86.7%, Memory=66.9%, Network=5.9Mbps, Delay=114.4ms
+2026-03-16 00:22:02.162 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (86.7%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.162 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 7 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.163 | INFO     | __main__:run_single_trial:304 - Trial 7 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.2ms
+2026-03-16 00:22:02.267 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 8: rule_based on network_drop
+2026-03-16 00:22:02.268 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=96.2%, Memory=67.5%, Network=5.0Mbps, Delay=134.8ms
+2026-03-16 00:22:02.268 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (96.2%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.268 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 8 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.268 | INFO     | __main__:run_single_trial:304 - Trial 8 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.3ms
+2026-03-16 00:22:02.369 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 9: rule_based on network_drop
+2026-03-16 00:22:02.369 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=89.8%, Memory=60.2%, Network=5.0Mbps, Delay=129.1ms
+2026-03-16 00:22:02.369 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (89.8%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.370 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 9 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.370 | INFO     | __main__:run_single_trial:304 - Trial 9 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.4ms
+2026-03-16 00:22:02.475 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 10: rule_based on network_drop
+2026-03-16 00:22:02.475 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=90.7%, Memory=66.5%, Network=5.0Mbps, Delay=120.1ms
+2026-03-16 00:22:02.476 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (90.7%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.476 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 10 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.476 | INFO     | __main__:run_single_trial:304 - Trial 10 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.3ms
+2026-03-16 00:22:02.580 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 11: rule_based on network_drop
+2026-03-16 00:22:02.582 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=86.5%, Memory=67.3%, Network=9.1Mbps, Delay=142.1ms
+2026-03-16 00:22:02.582 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (86.5%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.582 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 11 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.582 | INFO     | __main__:run_single_trial:304 - Trial 11 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.4ms
+2026-03-16 00:22:02.688 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 12: rule_based on network_drop
+2026-03-16 00:22:02.688 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=56.8%, Network=7.3Mbps, Delay=139.5ms
+2026-03-16 00:22:02.688 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.688 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 12 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.688 | INFO     | __main__:run_single_trial:304 - Trial 12 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.2ms
+2026-03-16 00:22:02.793 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 13: rule_based on network_drop
+2026-03-16 00:22:02.794 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=65.6%, Network=5.2Mbps, Delay=158.3ms
+2026-03-16 00:22:02.794 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.794 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 13 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.794 | INFO     | __main__:run_single_trial:304 - Trial 13 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.3ms
+2026-03-16 00:22:02.897 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 14: rule_based on network_drop
+2026-03-16 00:22:02.898 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=52.2%, Network=6.1Mbps, Delay=149.8ms
+2026-03-16 00:22:02.898 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:02.898 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 14 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:02.898 | INFO     | __main__:run_single_trial:304 - Trial 14 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.3ms
+2026-03-16 00:22:02.999 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 15: rule_based on network_drop
+2026-03-16 00:22:03.000 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=69.1%, Network=5.0Mbps, Delay=182.1ms
+2026-03-16 00:22:03.000 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.000 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 15 completed: Accuracy=0.00, MTTR=0.0s, Outcome=destructive
+2026-03-16 00:22:03.000 | INFO     | __main__:run_single_trial:304 - Trial 15 (rule_based/network_drop): Action=restart, Outcome=destructive, Time=0.2ms
+2026-03-16 00:22:03.105 | INFO     | __main__:run_experiment:351 - 
+Fault type: cpu_spike
+2026-03-16 00:22:03.106 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 16: rule_based on cpu_spike
+2026-03-16 00:22:03.106 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=85.7%, Network=77.8Mbps, Delay=130.2ms
+2026-03-16 00:22:03.106 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.107 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 16 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.107 | INFO     | __main__:run_single_trial:304 - Trial 16 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.3ms
+2026-03-16 00:22:03.208 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 17: rule_based on cpu_spike
+2026-03-16 00:22:03.208 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=91.7%, Memory=89.1%, Network=63.6Mbps, Delay=172.6ms
+2026-03-16 00:22:03.208 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (91.7%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.208 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 17 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.208 | INFO     | __main__:run_single_trial:304 - Trial 17 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.3ms
+2026-03-16 00:22:03.314 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 18: rule_based on cpu_spike
+2026-03-16 00:22:03.314 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=98.0%, Memory=92.6%, Network=75.7Mbps, Delay=198.8ms
+2026-03-16 00:22:03.314 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (98.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.314 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 18 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.314 | INFO     | __main__:run_single_trial:304 - Trial 18 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.2ms
+2026-03-16 00:22:03.415 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 19: rule_based on cpu_spike
+2026-03-16 00:22:03.415 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=97.3%, Network=57.3Mbps, Delay=129.6ms
+2026-03-16 00:22:03.416 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.416 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 19 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.416 | INFO     | __main__:run_single_trial:304 - Trial 19 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.6ms
+2026-03-16 00:22:03.517 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 20: rule_based on cpu_spike
+2026-03-16 00:22:03.518 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=97.3%, Memory=94.5%, Network=61.0Mbps, Delay=177.3ms
+2026-03-16 00:22:03.518 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (97.3%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.519 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 20 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.519 | INFO     | __main__:run_single_trial:304 - Trial 20 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.6ms
+2026-03-16 00:22:03.624 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 21: rule_based on cpu_spike
+2026-03-16 00:22:03.625 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=100.0%, Network=64.6Mbps, Delay=217.6ms
+2026-03-16 00:22:03.625 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.625 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 21 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.625 | INFO     | __main__:run_single_trial:304 - Trial 21 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.5ms
+2026-03-16 00:22:03.729 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 22: rule_based on cpu_spike
+2026-03-16 00:22:03.729 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=99.2%, Memory=82.2%, Network=70.2Mbps, Delay=168.4ms
+2026-03-16 00:22:03.729 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (99.2%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.729 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 22 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.729 | INFO     | __main__:run_single_trial:304 - Trial 22 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.2ms
+2026-03-16 00:22:03.834 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 23: rule_based on cpu_spike
+2026-03-16 00:22:03.834 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=82.2%, Network=79.2Mbps, Delay=174.4ms
+2026-03-16 00:22:03.834 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.834 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 23 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.834 | INFO     | __main__:run_single_trial:304 - Trial 23 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.3ms
+2026-03-16 00:22:03.940 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 24: rule_based on cpu_spike
+2026-03-16 00:22:03.940 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=99.7%, Network=62.8Mbps, Delay=123.9ms
+2026-03-16 00:22:03.940 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:03.941 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 24 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:03.941 | INFO     | __main__:run_single_trial:304 - Trial 24 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.4ms
+2026-03-16 00:22:04.043 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 25: rule_based on cpu_spike
+2026-03-16 00:22:04.043 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=90.3%, Network=76.5Mbps, Delay=162.8ms
+2026-03-16 00:22:04.044 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.044 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 25 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:04.044 | INFO     | __main__:run_single_trial:304 - Trial 25 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.5ms
+2026-03-16 00:22:04.149 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 26: rule_based on cpu_spike
+2026-03-16 00:22:04.150 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=100.0%, Memory=88.2%, Network=62.7Mbps, Delay=204.6ms
+2026-03-16 00:22:04.150 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (100.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.150 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 26 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:04.150 | INFO     | __main__:run_single_trial:304 - Trial 26 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.2ms
+2026-03-16 00:22:04.255 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 27: rule_based on cpu_spike
+2026-03-16 00:22:04.255 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=98.0%, Memory=100.0%, Network=67.6Mbps, Delay=197.7ms
+2026-03-16 00:22:04.255 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (98.0%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.256 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 27 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:04.256 | INFO     | __main__:run_single_trial:304 - Trial 27 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.2ms
+2026-03-16 00:22:04.362 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 28: rule_based on cpu_spike
+2026-03-16 00:22:04.362 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=93.5%, Memory=99.0%, Network=69.0Mbps, Delay=242.3ms
+2026-03-16 00:22:04.363 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (93.5%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.363 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 28 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:04.363 | INFO     | __main__:run_single_trial:304 - Trial 28 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.6ms
+2026-03-16 00:22:04.465 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 29: rule_based on cpu_spike
+2026-03-16 00:22:04.466 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=92.9%, Memory=82.7%, Network=68.7Mbps, Delay=168.9ms
+2026-03-16 00:22:04.466 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (92.9%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.466 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 29 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:04.466 | INFO     | __main__:run_single_trial:304 - Trial 29 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.4ms
+2026-03-16 00:22:04.572 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 30: rule_based on cpu_spike
+2026-03-16 00:22:04.573 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=94.9%, Memory=80.3%, Network=68.3Mbps, Delay=164.5ms
+2026-03-16 00:22:04.573 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (94.9%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.573 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 30 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:04.573 | INFO     | __main__:run_single_trial:304 - Trial 30 (rule_based/cpu_spike): Action=restart, Outcome=correct, Time=0.4ms
+2026-03-16 00:22:04.678 | INFO     | __main__:run_experiment:351 - 
+Fault type: memory_leak
+2026-03-16 00:22:04.679 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 31: rule_based on memory_leak
+2026-03-16 00:22:04.679 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=84.6%, Memory=94.1%, Network=74.4Mbps, Delay=102.8ms
+2026-03-16 00:22:04.679 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (84.6%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.679 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 31 completed: Accuracy=0.15, MTTR=0.0s, Outcome=incorrect
+2026-03-16 00:22:04.679 | INFO     | __main__:run_single_trial:304 - Trial 31 (rule_based/memory_leak): Action=restart, Outcome=incorrect, Time=0.2ms
+2026-03-16 00:22:04.783 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 32: rule_based on memory_leak
+2026-03-16 00:22:04.784 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=74.0%, Memory=97.6%, Network=76.9Mbps, Delay=146.6ms
+2026-03-16 00:22:04.784 | WARNING  | src.baselines.rule_based_agent:observe_and_act:95 - RULE FIRED: Memory usage (97.6%) exceeds threshold (85.0%) → scale_up
+2026-03-16 00:22:04.784 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 32 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:04.784 | INFO     | __main__:run_single_trial:304 - Trial 32 (rule_based/memory_leak): Action=scale_up, Outcome=correct, Time=0.3ms
+2026-03-16 00:22:04.890 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 33: rule_based on memory_leak
+2026-03-16 00:22:04.890 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=83.6%, Memory=90.8%, Network=65.4Mbps, Delay=143.2ms
+2026-03-16 00:22:04.890 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (83.6%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.891 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 33 completed: Accuracy=0.15, MTTR=0.0s, Outcome=incorrect
+2026-03-16 00:22:04.891 | INFO     | __main__:run_single_trial:304 - Trial 33 (rule_based/memory_leak): Action=restart, Outcome=incorrect, Time=0.3ms
+2026-03-16 00:22:04.996 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 34: rule_based on memory_leak
+2026-03-16 00:22:04.996 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=81.5%, Memory=92.6%, Network=54.7Mbps, Delay=126.7ms
+2026-03-16 00:22:04.997 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (81.5%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:04.997 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 34 completed: Accuracy=0.15, MTTR=0.0s, Outcome=incorrect
+2026-03-16 00:22:04.997 | INFO     | __main__:run_single_trial:304 - Trial 34 (rule_based/memory_leak): Action=restart, Outcome=incorrect, Time=0.3ms
+2026-03-16 00:22:05.098 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 35: rule_based on memory_leak
+2026-03-16 00:22:05.098 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=78.6%, Memory=97.4%, Network=74.0Mbps, Delay=109.0ms
+2026-03-16 00:22:05.099 | WARNING  | src.baselines.rule_based_agent:observe_and_act:95 - RULE FIRED: Memory usage (97.4%) exceeds threshold (85.0%) → scale_up
+2026-03-16 00:22:05.099 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 35 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:05.099 | INFO     | __main__:run_single_trial:304 - Trial 35 (rule_based/memory_leak): Action=scale_up, Outcome=correct, Time=0.3ms
+2026-03-16 00:22:05.204 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 36: rule_based on memory_leak
+2026-03-16 00:22:05.205 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=70.4%, Memory=95.8%, Network=70.5Mbps, Delay=96.4ms
+2026-03-16 00:22:05.205 | WARNING  | src.baselines.rule_based_agent:observe_and_act:95 - RULE FIRED: Memory usage (95.8%) exceeds threshold (85.0%) → scale_up
+2026-03-16 00:22:05.205 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 36 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:05.205 | INFO     | __main__:run_single_trial:304 - Trial 36 (rule_based/memory_leak): Action=scale_up, Outcome=correct, Time=0.1ms
+2026-03-16 00:22:05.310 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 37: rule_based on memory_leak
+2026-03-16 00:22:05.310 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=88.3%, Memory=91.0%, Network=77.5Mbps, Delay=84.3ms
+2026-03-16 00:22:05.310 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (88.3%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:05.310 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 37 completed: Accuracy=0.15, MTTR=0.0s, Outcome=incorrect
+2026-03-16 00:22:05.310 | INFO     | __main__:run_single_trial:304 - Trial 37 (rule_based/memory_leak): Action=restart, Outcome=incorrect, Time=0.2ms
+2026-03-16 00:22:05.416 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 38: rule_based on memory_leak
+2026-03-16 00:22:05.418 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=87.3%, Memory=99.3%, Network=69.9Mbps, Delay=102.9ms
+2026-03-16 00:22:05.418 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (87.3%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:05.418 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 38 completed: Accuracy=0.15, MTTR=0.0s, Outcome=incorrect
+2026-03-16 00:22:05.418 | INFO     | __main__:run_single_trial:304 - Trial 38 (rule_based/memory_leak): Action=restart, Outcome=incorrect, Time=0.6ms
+2026-03-16 00:22:05.522 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 39: rule_based on memory_leak
+2026-03-16 00:22:05.523 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=69.6%, Memory=94.3%, Network=55.7Mbps, Delay=140.9ms
+2026-03-16 00:22:05.523 | WARNING  | src.baselines.rule_based_agent:observe_and_act:95 - RULE FIRED: Memory usage (94.3%) exceeds threshold (85.0%) → scale_up
+2026-03-16 00:22:05.523 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 39 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:05.523 | INFO     | __main__:run_single_trial:304 - Trial 39 (rule_based/memory_leak): Action=scale_up, Outcome=correct, Time=0.2ms
+2026-03-16 00:22:05.628 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 40: rule_based on memory_leak
+2026-03-16 00:22:05.628 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=71.7%, Memory=93.2%, Network=74.9Mbps, Delay=97.8ms
+2026-03-16 00:22:05.629 | WARNING  | src.baselines.rule_based_agent:observe_and_act:95 - RULE FIRED: Memory usage (93.2%) exceeds threshold (85.0%) → scale_up
+2026-03-16 00:22:05.629 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 40 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:05.629 | INFO     | __main__:run_single_trial:304 - Trial 40 (rule_based/memory_leak): Action=scale_up, Outcome=correct, Time=0.4ms
+2026-03-16 00:22:05.732 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 41: rule_based on memory_leak
+2026-03-16 00:22:05.732 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=71.5%, Memory=92.6%, Network=54.4Mbps, Delay=84.0ms
+2026-03-16 00:22:05.732 | WARNING  | src.baselines.rule_based_agent:observe_and_act:95 - RULE FIRED: Memory usage (92.6%) exceeds threshold (85.0%) → scale_up
+2026-03-16 00:22:05.732 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 41 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:05.732 | INFO     | __main__:run_single_trial:304 - Trial 41 (rule_based/memory_leak): Action=scale_up, Outcome=correct, Time=0.5ms
+2026-03-16 00:22:05.838 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 42: rule_based on memory_leak
+2026-03-16 00:22:05.838 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=88.1%, Memory=91.5%, Network=77.1Mbps, Delay=81.4ms
+2026-03-16 00:22:05.838 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (88.1%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:05.838 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 42 completed: Accuracy=0.15, MTTR=0.0s, Outcome=incorrect
+2026-03-16 00:22:05.838 | INFO     | __main__:run_single_trial:304 - Trial 42 (rule_based/memory_leak): Action=restart, Outcome=incorrect, Time=0.1ms
+2026-03-16 00:22:05.943 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 43: rule_based on memory_leak
+2026-03-16 00:22:05.943 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=86.8%, Memory=96.6%, Network=67.0Mbps, Delay=88.0ms
+2026-03-16 00:22:05.943 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (86.8%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:05.943 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 43 completed: Accuracy=0.15, MTTR=0.0s, Outcome=incorrect
+2026-03-16 00:22:05.943 | INFO     | __main__:run_single_trial:304 - Trial 43 (rule_based/memory_leak): Action=restart, Outcome=incorrect, Time=0.2ms
+2026-03-16 00:22:06.045 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 44: rule_based on memory_leak
+2026-03-16 00:22:06.049 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=81.8%, Memory=93.6%, Network=75.6Mbps, Delay=140.9ms
+2026-03-16 00:22:06.049 | WARNING  | src.baselines.rule_based_agent:observe_and_act:84 - RULE FIRED: CPU usage (81.8%) exceeds threshold (80.0%) → restart
+2026-03-16 00:22:06.050 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 44 completed: Accuracy=0.15, MTTR=0.0s, Outcome=incorrect
+2026-03-16 00:22:06.050 | INFO     | __main__:run_single_trial:304 - Trial 44 (rule_based/memory_leak): Action=restart, Outcome=incorrect, Time=0.3ms
+2026-03-16 00:22:06.156 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 45: rule_based on memory_leak
+2026-03-16 00:22:06.157 | DEBUG    | src.baselines.rule_based_agent:observe_and_act:70 - Rule-based agent observing: CPU=77.1%, Memory=99.7%, Network=79.0Mbps, Delay=147.0ms
+2026-03-16 00:22:06.157 | WARNING  | src.baselines.rule_based_agent:observe_and_act:95 - RULE FIRED: Memory usage (99.7%) exceeds threshold (85.0%) → scale_up
+2026-03-16 00:22:06.157 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 45 completed: Accuracy=0.50, MTTR=0.0s, Outcome=correct
+2026-03-16 00:22:06.157 | INFO     | __main__:run_single_trial:304 - Trial 45 (rule_based/memory_leak): Action=scale_up, Outcome=correct, Time=0.2ms
+2026-03-16 00:22:06.265 | INFO     | src.evaluation.metrics:save_results:319 - Saved 45 trial results to experiments/results/rule_based_results.json
+2026-03-16 00:22:06.271 | INFO     | __main__:run_experiment:342 - 
+======================================================================
+2026-03-16 00:22:06.271 | INFO     | __main__:run_experiment:343 - TESTING: AIF_NO_GATE
+2026-03-16 00:22:06.271 | INFO     | __main__:run_experiment:344 - ======================================================================
+2026-03-16 00:22:06.272 | INFO     | __main__:run_experiment:351 - 
+Fault type: network_drop
+2026-03-16 00:22:06.272 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 1: aif_no_gate on network_drop
+2026-03-16 00:22:06.272 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=7.3Mbps, SLO violated=True
+2026-03-16 00:22:06.272 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:06.272 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:06.272 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:06.272 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:06.272 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 1 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:06.272 | INFO     | __main__:run_single_trial:304 - Trial 1 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.5ms
+2026-03-16 00:22:06.377 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 2: aif_no_gate on network_drop
+2026-03-16 00:22:06.378 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=5.1Mbps, SLO violated=True
+2026-03-16 00:22:06.378 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:06.378 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:06.378 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:06.378 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:06.378 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 2 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:06.378 | INFO     | __main__:run_single_trial:304 - Trial 2 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.6ms
+2026-03-16 00:22:06.484 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 3: aif_no_gate on network_drop
+2026-03-16 00:22:06.484 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=8.4Mbps, SLO violated=True
+2026-03-16 00:22:06.484 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:06.485 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:06.485 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:06.485 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:06.485 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 3 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:06.485 | INFO     | __main__:run_single_trial:304 - Trial 3 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.7ms
+2026-03-16 00:22:06.589 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 4: aif_no_gate on network_drop
+2026-03-16 00:22:06.590 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=6.1Mbps, SLO violated=True
+2026-03-16 00:22:06.590 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:06.590 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:06.590 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:06.591 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:06.591 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 4 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:06.591 | INFO     | __main__:run_single_trial:304 - Trial 4 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=1.1ms
+2026-03-16 00:22:06.692 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 5: aif_no_gate on network_drop
+2026-03-16 00:22:06.692 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=92.1%, Network=5.4Mbps, SLO violated=True
+2026-03-16 00:22:06.692 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:06.692 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:06.693 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:06.693 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:06.693 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 5 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:06.693 | INFO     | __main__:run_single_trial:304 - Trial 5 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.5ms
+2026-03-16 00:22:06.798 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 6: aif_no_gate on network_drop
+2026-03-16 00:22:06.799 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=97.1%, Network=5.0Mbps, SLO violated=True
+2026-03-16 00:22:06.799 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:06.799 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:06.800 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:06.800 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:06.800 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 6 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:06.800 | INFO     | __main__:run_single_trial:304 - Trial 6 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=1.3ms
+2026-03-16 00:22:06.905 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 7: aif_no_gate on network_drop
+2026-03-16 00:22:06.906 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=87.2%, Network=7.4Mbps, SLO violated=True
+2026-03-16 00:22:06.906 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:06.906 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:06.906 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:06.906 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:06.906 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 7 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:06.906 | INFO     | __main__:run_single_trial:304 - Trial 7 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.6ms
+2026-03-16 00:22:07.008 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 8: aif_no_gate on network_drop
+2026-03-16 00:22:07.008 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=86.7%, Network=5.0Mbps, SLO violated=True
+2026-03-16 00:22:07.009 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.009 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.009 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.009 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.009 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 8 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.009 | INFO     | __main__:run_single_trial:304 - Trial 8 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.3ms
+2026-03-16 00:22:07.114 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 9: aif_no_gate on network_drop
+2026-03-16 00:22:07.118 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=99.4%, Network=5.0Mbps, SLO violated=True
+2026-03-16 00:22:07.119 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.119 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.119 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.119 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.119 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 9 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.119 | INFO     | __main__:run_single_trial:304 - Trial 9 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.7ms
+2026-03-16 00:22:07.228 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 10: aif_no_gate on network_drop
+2026-03-16 00:22:07.228 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=99.2%, Network=5.0Mbps, SLO violated=True
+2026-03-16 00:22:07.228 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.228 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.228 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.228 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.228 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 10 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.228 | INFO     | __main__:run_single_trial:304 - Trial 10 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.2ms
+2026-03-16 00:22:07.333 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 11: aif_no_gate on network_drop
+2026-03-16 00:22:07.333 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=6.7Mbps, SLO violated=True
+2026-03-16 00:22:07.333 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.334 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.334 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.334 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.334 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 11 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.334 | INFO     | __main__:run_single_trial:304 - Trial 11 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.2ms
+2026-03-16 00:22:07.439 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 12: aif_no_gate on network_drop
+2026-03-16 00:22:07.439 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=9.8Mbps, SLO violated=True
+2026-03-16 00:22:07.439 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.439 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.439 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.439 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.439 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 12 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.439 | INFO     | __main__:run_single_trial:304 - Trial 12 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.3ms
+2026-03-16 00:22:07.540 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 13: aif_no_gate on network_drop
+2026-03-16 00:22:07.540 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=5.0Mbps, SLO violated=True
+2026-03-16 00:22:07.540 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.540 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.540 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.540 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.541 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 13 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.541 | INFO     | __main__:run_single_trial:304 - Trial 13 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.4ms
+2026-03-16 00:22:07.646 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 14: aif_no_gate on network_drop
+2026-03-16 00:22:07.647 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=88.5%, Network=5.0Mbps, SLO violated=True
+2026-03-16 00:22:07.647 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.647 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.648 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.648 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.648 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 14 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.648 | INFO     | __main__:run_single_trial:304 - Trial 14 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=1.5ms
+2026-03-16 00:22:07.750 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 15: aif_no_gate on network_drop
+2026-03-16 00:22:07.750 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=5.0Mbps, SLO violated=True
+2026-03-16 00:22:07.750 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.750 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.750 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.750 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.750 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 15 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.751 | INFO     | __main__:run_single_trial:304 - Trial 15 (aif_no_gate/network_drop): Action=None, Outcome=no_action, Time=0.6ms
+2026-03-16 00:22:07.856 | INFO     | __main__:run_experiment:351 - 
+Fault type: cpu_spike
+2026-03-16 00:22:07.856 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 16: aif_no_gate on cpu_spike
+2026-03-16 00:22:07.856 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=93.0%, Network=78.7Mbps, SLO violated=True
+2026-03-16 00:22:07.857 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.857 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.857 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.857 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.857 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 16 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.858 | INFO     | __main__:run_single_trial:304 - Trial 16 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=1.0ms
+2026-03-16 00:22:07.963 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 17: aif_no_gate on cpu_spike
+2026-03-16 00:22:07.963 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=77.7Mbps, SLO violated=True
+2026-03-16 00:22:07.963 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:07.963 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:07.964 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:07.964 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:07.964 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 17 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:07.964 | INFO     | __main__:run_single_trial:304 - Trial 17 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.8ms
+2026-03-16 00:22:08.069 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 18: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.070 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=95.3%, Network=74.1Mbps, SLO violated=True
+2026-03-16 00:22:08.070 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.070 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.070 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.070 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.071 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 18 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.071 | INFO     | __main__:run_single_trial:304 - Trial 18 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.8ms
+2026-03-16 00:22:08.171 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 19: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.172 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=96.2%, Network=71.0Mbps, SLO violated=True
+2026-03-16 00:22:08.172 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.172 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.172 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.172 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.172 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 19 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.172 | INFO     | __main__:run_single_trial:304 - Trial 19 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.3ms
+2026-03-16 00:22:08.277 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 20: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.277 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=51.0Mbps, SLO violated=True
+2026-03-16 00:22:08.277 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.277 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.277 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.277 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.277 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 20 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.278 | INFO     | __main__:run_single_trial:304 - Trial 20 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.3ms
+2026-03-16 00:22:08.383 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 21: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.383 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=98.0%, Network=70.7Mbps, SLO violated=True
+2026-03-16 00:22:08.384 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.384 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.384 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.384 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.384 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 21 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.384 | INFO     | __main__:run_single_trial:304 - Trial 21 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.9ms
+2026-03-16 00:22:08.489 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 22: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.490 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=93.8%, Network=56.4Mbps, SLO violated=True
+2026-03-16 00:22:08.490 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.490 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.490 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.490 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.490 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 22 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.490 | INFO     | __main__:run_single_trial:304 - Trial 22 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.7ms
+2026-03-16 00:22:08.596 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 23: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.596 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=97.2%, Network=61.2Mbps, SLO violated=True
+2026-03-16 00:22:08.596 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.596 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.596 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.596 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.596 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 23 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.596 | INFO     | __main__:run_single_trial:304 - Trial 23 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.5ms
+2026-03-16 00:22:08.702 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 24: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.702 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=95.2%, Network=76.0Mbps, SLO violated=True
+2026-03-16 00:22:08.703 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.703 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.703 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.703 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.704 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 24 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.704 | INFO     | __main__:run_single_trial:304 - Trial 24 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=1.3ms
+2026-03-16 00:22:08.806 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 25: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.806 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=98.1%, Network=61.3Mbps, SLO violated=True
+2026-03-16 00:22:08.806 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.806 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.806 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.807 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.807 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 25 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.807 | INFO     | __main__:run_single_trial:304 - Trial 25 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.3ms
+2026-03-16 00:22:08.912 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 26: aif_no_gate on cpu_spike
+2026-03-16 00:22:08.913 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=97.9%, Network=50.9Mbps, SLO violated=True
+2026-03-16 00:22:08.913 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:08.913 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:08.913 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:08.914 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:08.914 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 26 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:08.914 | INFO     | __main__:run_single_trial:304 - Trial 26 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=1.0ms
+2026-03-16 00:22:09.016 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 27: aif_no_gate on cpu_spike
+2026-03-16 00:22:09.017 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=91.3%, Network=66.1Mbps, SLO violated=True
+2026-03-16 00:22:09.017 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.017 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.017 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.017 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.018 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 27 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.018 | INFO     | __main__:run_single_trial:304 - Trial 27 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.8ms
+2026-03-16 00:22:09.122 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 28: aif_no_gate on cpu_spike
+2026-03-16 00:22:09.123 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=96.7%, Network=51.8Mbps, SLO violated=True
+2026-03-16 00:22:09.123 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.124 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.124 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.124 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.124 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 28 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.124 | INFO     | __main__:run_single_trial:304 - Trial 28 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=1.1ms
+2026-03-16 00:22:09.225 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 29: aif_no_gate on cpu_spike
+2026-03-16 00:22:09.226 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=69.3Mbps, SLO violated=True
+2026-03-16 00:22:09.227 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.227 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.227 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.227 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.227 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 29 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.228 | INFO     | __main__:run_single_trial:304 - Trial 29 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=1.6ms
+2026-03-16 00:22:09.331 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 30: aif_no_gate on cpu_spike
+2026-03-16 00:22:09.332 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=100.0%, Network=72.2Mbps, SLO violated=True
+2026-03-16 00:22:09.332 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.332 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.332 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.332 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.333 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 30 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.333 | INFO     | __main__:run_single_trial:304 - Trial 30 (aif_no_gate/cpu_spike): Action=None, Outcome=no_action, Time=0.7ms
+2026-03-16 00:22:09.438 | INFO     | __main__:run_experiment:351 - 
+Fault type: memory_leak
+2026-03-16 00:22:09.438 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 31: aif_no_gate on memory_leak
+2026-03-16 00:22:09.439 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=92.8%, Network=54.3Mbps, SLO violated=True
+2026-03-16 00:22:09.439 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.439 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.439 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.440 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.440 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 31 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.440 | INFO     | __main__:run_single_trial:304 - Trial 31 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=1.2ms
+2026-03-16 00:22:09.544 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 32: aif_no_gate on memory_leak
+2026-03-16 00:22:09.544 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=79.8%, Network=69.2Mbps, SLO violated=True
+2026-03-16 00:22:09.544 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.544 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.544 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.544 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.545 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 32 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.545 | INFO     | __main__:run_single_trial:304 - Trial 32 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.5ms
+2026-03-16 00:22:09.648 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 33: aif_no_gate on memory_leak
+2026-03-16 00:22:09.648 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=89.2%, Network=68.8Mbps, SLO violated=True
+2026-03-16 00:22:09.648 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.648 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.649 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.649 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.649 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 33 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.649 | INFO     | __main__:run_single_trial:304 - Trial 33 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.5ms
+2026-03-16 00:22:09.750 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 34: aif_no_gate on memory_leak
+2026-03-16 00:22:09.750 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=95.8%, Network=79.7Mbps, SLO violated=True
+2026-03-16 00:22:09.751 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.751 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.751 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.751 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.751 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 34 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.751 | INFO     | __main__:run_single_trial:304 - Trial 34 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.7ms
+2026-03-16 00:22:09.856 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 35: aif_no_gate on memory_leak
+2026-03-16 00:22:09.856 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=75.3%, Network=55.6Mbps, SLO violated=True
+2026-03-16 00:22:09.856 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.857 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.857 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.857 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.857 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 35 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.857 | INFO     | __main__:run_single_trial:304 - Trial 35 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.7ms
+2026-03-16 00:22:09.959 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 36: aif_no_gate on memory_leak
+2026-03-16 00:22:09.959 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=88.5%, Network=59.1Mbps, SLO violated=True
+2026-03-16 00:22:09.960 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:09.960 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:09.960 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:09.960 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:09.960 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 36 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:09.960 | INFO     | __main__:run_single_trial:304 - Trial 36 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.9ms
+2026-03-16 00:22:10.064 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 37: aif_no_gate on memory_leak
+2026-03-16 00:22:10.065 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=68.5%, Network=62.0Mbps, SLO violated=True
+2026-03-16 00:22:10.066 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.066 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.066 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.067 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.067 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 37 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.067 | INFO     | __main__:run_single_trial:304 - Trial 37 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=1.4ms
+2026-03-16 00:22:10.172 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 38: aif_no_gate on memory_leak
+2026-03-16 00:22:10.173 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=94.2%, Network=71.6Mbps, SLO violated=True
+2026-03-16 00:22:10.173 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.173 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.173 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.173 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.174 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 38 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.174 | INFO     | __main__:run_single_trial:304 - Trial 38 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.9ms
+2026-03-16 00:22:10.279 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 39: aif_no_gate on memory_leak
+2026-03-16 00:22:10.280 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=68.0%, Network=60.9Mbps, SLO violated=True
+2026-03-16 00:22:10.280 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.280 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.280 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.281 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.281 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 39 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.281 | INFO     | __main__:run_single_trial:304 - Trial 39 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=1.1ms
+2026-03-16 00:22:10.386 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 40: aif_no_gate on memory_leak
+2026-03-16 00:22:10.386 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=95.1%, Network=51.7Mbps, SLO violated=True
+2026-03-16 00:22:10.386 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.386 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.386 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.386 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.386 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 40 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.387 | INFO     | __main__:run_single_trial:304 - Trial 40 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.6ms
+2026-03-16 00:22:10.489 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 41: aif_no_gate on memory_leak
+2026-03-16 00:22:10.489 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=69.6%, Network=62.9Mbps, SLO violated=True
+2026-03-16 00:22:10.489 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.489 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.490 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.490 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.490 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 41 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.490 | INFO     | __main__:run_single_trial:304 - Trial 41 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.7ms
+2026-03-16 00:22:10.591 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 42: aif_no_gate on memory_leak
+2026-03-16 00:22:10.591 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=70.5%, Network=57.3Mbps, SLO violated=True
+2026-03-16 00:22:10.592 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.592 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.592 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.592 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.592 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 42 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.592 | INFO     | __main__:run_single_trial:304 - Trial 42 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.8ms
+2026-03-16 00:22:10.697 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 43: aif_no_gate on memory_leak
+2026-03-16 00:22:10.697 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=83.9%, Network=57.9Mbps, SLO violated=True
+2026-03-16 00:22:10.698 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.699 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.700 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.700 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.700 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 43 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.700 | INFO     | __main__:run_single_trial:304 - Trial 43 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=2.6ms
+2026-03-16 00:22:10.802 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 44: aif_no_gate on memory_leak
+2026-03-16 00:22:10.802 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=80.0%, Network=75.9Mbps, SLO violated=True
+2026-03-16 00:22:10.802 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.803 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.803 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.803 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.803 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 44 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.804 | INFO     | __main__:run_single_trial:304 - Trial 44 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=1.4ms
+2026-03-16 00:22:10.909 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 45: aif_no_gate on memory_leak
+2026-03-16 00:22:10.909 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:100 - AIF-no-gate observing: CPU=75.5%, Network=53.3Mbps, SLO violated=True
+2026-03-16 00:22:10.910 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:118 - VFE computed: 0.000 (but NO gating applied)
+2026-03-16 00:22:10.910 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:10.910 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:10.910 | DEBUG    | src.baselines.aif_no_gate_agent:observe_and_act:150 - No action needed (SLO not violated)
+2026-03-16 00:22:10.910 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 45 completed: Accuracy=1.00, MTTR=0.0s, Outcome=no_action
+2026-03-16 00:22:10.910 | INFO     | __main__:run_single_trial:304 - Trial 45 (aif_no_gate/memory_leak): Action=None, Outcome=no_action, Time=0.7ms
+2026-03-16 00:22:11.024 | INFO     | src.evaluation.metrics:save_results:319 - Saved 45 trial results to experiments/results/aif_no_gate_results.json
+2026-03-16 00:22:11.026 | INFO     | __main__:run_experiment:342 - 
+======================================================================
+2026-03-16 00:22:11.026 | INFO     | __main__:run_experiment:343 - TESTING: PAAIA
+2026-03-16 00:22:11.026 | INFO     | __main__:run_experiment:344 - ======================================================================
+2026-03-16 00:22:11.026 | INFO     | __main__:run_experiment:351 - 
+Fault type: network_drop
+2026-03-16 00:22:11.026 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 1: paaia on network_drop
+2026-03-16 00:22:11.026 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.026 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.026 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 1 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.027 | INFO     | __main__:run_single_trial:304 - Trial 1 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:11.132 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 2: paaia on network_drop
+2026-03-16 00:22:11.132 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.132 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.132 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 2 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.132 | INFO     | __main__:run_single_trial:304 - Trial 2 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:11.234 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 3: paaia on network_drop
+2026-03-16 00:22:11.234 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.234 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.234 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 3 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.234 | INFO     | __main__:run_single_trial:304 - Trial 3 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:11.339 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 4: paaia on network_drop
+2026-03-16 00:22:11.339 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.340 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.340 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 4 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.340 | INFO     | __main__:run_single_trial:304 - Trial 4 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.1ms
+2026-03-16 00:22:11.445 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 5: paaia on network_drop
+2026-03-16 00:22:11.445 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.445 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.445 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 5 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.445 | INFO     | __main__:run_single_trial:304 - Trial 5 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:11.551 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 6: paaia on network_drop
+2026-03-16 00:22:11.551 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.551 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.551 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 6 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.551 | INFO     | __main__:run_single_trial:304 - Trial 6 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:11.657 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 7: paaia on network_drop
+2026-03-16 00:22:11.657 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.657 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.658 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 7 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.658 | INFO     | __main__:run_single_trial:304 - Trial 7 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.4ms
+2026-03-16 00:22:11.762 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 8: paaia on network_drop
+2026-03-16 00:22:11.763 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.763 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.763 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 8 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.763 | INFO     | __main__:run_single_trial:304 - Trial 8 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:11.868 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 9: paaia on network_drop
+2026-03-16 00:22:11.869 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.869 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.869 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 9 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.870 | INFO     | __main__:run_single_trial:304 - Trial 9 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.4ms
+2026-03-16 00:22:11.972 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 10: paaia on network_drop
+2026-03-16 00:22:11.973 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:11.973 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:11.973 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 10 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:11.973 | INFO     | __main__:run_single_trial:304 - Trial 10 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:12.076 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 11: paaia on network_drop
+2026-03-16 00:22:12.076 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.076 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.077 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 11 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.077 | INFO     | __main__:run_single_trial:304 - Trial 11 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:12.181 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 12: paaia on network_drop
+2026-03-16 00:22:12.181 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.181 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.181 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 12 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.181 | INFO     | __main__:run_single_trial:304 - Trial 12 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:12.287 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 13: paaia on network_drop
+2026-03-16 00:22:12.287 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.288 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.288 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 13 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.288 | INFO     | __main__:run_single_trial:304 - Trial 13 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.8ms
+2026-03-16 00:22:12.391 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 14: paaia on network_drop
+2026-03-16 00:22:12.391 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.391 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.391 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 14 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.391 | INFO     | __main__:run_single_trial:304 - Trial 14 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:12.492 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 15: paaia on network_drop
+2026-03-16 00:22:12.492 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.493 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.493 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 15 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.493 | INFO     | __main__:run_single_trial:304 - Trial 15 (paaia/network_drop): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:12.598 | INFO     | __main__:run_experiment:351 - 
+Fault type: cpu_spike
+2026-03-16 00:22:12.598 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 16: paaia on cpu_spike
+2026-03-16 00:22:12.598 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.598 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.598 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 16 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.598 | INFO     | __main__:run_single_trial:304 - Trial 16 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.1ms
+2026-03-16 00:22:12.704 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 17: paaia on cpu_spike
+2026-03-16 00:22:12.704 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.704 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.705 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 17 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.705 | INFO     | __main__:run_single_trial:304 - Trial 17 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:12.806 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 18: paaia on cpu_spike
+2026-03-16 00:22:12.806 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.807 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.807 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 18 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.807 | INFO     | __main__:run_single_trial:304 - Trial 18 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.5ms
+2026-03-16 00:22:12.909 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 19: paaia on cpu_spike
+2026-03-16 00:22:12.909 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:12.910 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:12.910 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 19 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:12.910 | INFO     | __main__:run_single_trial:304 - Trial 19 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:13.015 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 20: paaia on cpu_spike
+2026-03-16 00:22:13.015 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.015 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.015 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 20 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.015 | INFO     | __main__:run_single_trial:304 - Trial 20 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:13.121 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 21: paaia on cpu_spike
+2026-03-16 00:22:13.121 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.121 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.122 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 21 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.122 | INFO     | __main__:run_single_trial:304 - Trial 21 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.4ms
+2026-03-16 00:22:13.224 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 22: paaia on cpu_spike
+2026-03-16 00:22:13.224 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.224 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.224 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 22 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.224 | INFO     | __main__:run_single_trial:304 - Trial 22 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:13.327 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 23: paaia on cpu_spike
+2026-03-16 00:22:13.328 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.328 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.328 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 23 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.329 | INFO     | __main__:run_single_trial:304 - Trial 23 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.5ms
+2026-03-16 00:22:13.432 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 24: paaia on cpu_spike
+2026-03-16 00:22:13.433 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.433 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.433 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 24 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.433 | INFO     | __main__:run_single_trial:304 - Trial 24 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.4ms
+2026-03-16 00:22:13.539 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 25: paaia on cpu_spike
+2026-03-16 00:22:13.539 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.539 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.540 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 25 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.540 | INFO     | __main__:run_single_trial:304 - Trial 25 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.4ms
+2026-03-16 00:22:13.645 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 26: paaia on cpu_spike
+2026-03-16 00:22:13.646 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.646 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.647 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 26 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.647 | INFO     | __main__:run_single_trial:304 - Trial 26 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.8ms
+2026-03-16 00:22:13.748 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 27: paaia on cpu_spike
+2026-03-16 00:22:13.748 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.748 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.749 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 27 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.749 | INFO     | __main__:run_single_trial:304 - Trial 27 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:13.854 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 28: paaia on cpu_spike
+2026-03-16 00:22:13.854 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.854 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.855 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 28 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.855 | INFO     | __main__:run_single_trial:304 - Trial 28 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:13.956 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 29: paaia on cpu_spike
+2026-03-16 00:22:13.956 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:13.956 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:13.956 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 29 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:13.956 | INFO     | __main__:run_single_trial:304 - Trial 29 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.1ms
+2026-03-16 00:22:14.061 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 30: paaia on cpu_spike
+2026-03-16 00:22:14.062 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.062 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.062 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 30 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.062 | INFO     | __main__:run_single_trial:304 - Trial 30 (paaia/cpu_spike): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:14.164 | INFO     | __main__:run_experiment:351 - 
+Fault type: memory_leak
+2026-03-16 00:22:14.165 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 31: paaia on memory_leak
+2026-03-16 00:22:14.165 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.165 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.165 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 31 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.166 | INFO     | __main__:run_single_trial:304 - Trial 31 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:14.271 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 32: paaia on memory_leak
+2026-03-16 00:22:14.271 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.271 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.271 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 32 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.271 | INFO     | __main__:run_single_trial:304 - Trial 32 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:14.376 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 33: paaia on memory_leak
+2026-03-16 00:22:14.377 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.377 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.377 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 33 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.377 | INFO     | __main__:run_single_trial:304 - Trial 33 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:14.482 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 34: paaia on memory_leak
+2026-03-16 00:22:14.483 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.483 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.483 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 34 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.484 | INFO     | __main__:run_single_trial:304 - Trial 34 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.6ms
+2026-03-16 00:22:14.589 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 35: paaia on memory_leak
+2026-03-16 00:22:14.589 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.589 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.590 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 35 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.590 | INFO     | __main__:run_single_trial:304 - Trial 35 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:14.695 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 36: paaia on memory_leak
+2026-03-16 00:22:14.697 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.697 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.697 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 36 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.697 | INFO     | __main__:run_single_trial:304 - Trial 36 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:14.798 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 37: paaia on memory_leak
+2026-03-16 00:22:14.798 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.798 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.799 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 37 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.799 | INFO     | __main__:run_single_trial:304 - Trial 37 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:14.904 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 38: paaia on memory_leak
+2026-03-16 00:22:14.904 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:14.904 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:14.905 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 38 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:14.905 | INFO     | __main__:run_single_trial:304 - Trial 38 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:15.006 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 39: paaia on memory_leak
+2026-03-16 00:22:15.006 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:15.006 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:15.007 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 39 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:15.007 | INFO     | __main__:run_single_trial:304 - Trial 39 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.4ms
+2026-03-16 00:22:15.112 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 40: paaia on memory_leak
+2026-03-16 00:22:15.112 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:15.112 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:15.113 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 40 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:15.113 | INFO     | __main__:run_single_trial:304 - Trial 40 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:15.213 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 41: paaia on memory_leak
+2026-03-16 00:22:15.213 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:15.213 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:15.214 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 41 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:15.214 | INFO     | __main__:run_single_trial:304 - Trial 41 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:15.319 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 42: paaia on memory_leak
+2026-03-16 00:22:15.319 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:15.319 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:15.320 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 42 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:15.320 | INFO     | __main__:run_single_trial:304 - Trial 42 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.3ms
+2026-03-16 00:22:15.421 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 43: paaia on memory_leak
+2026-03-16 00:22:15.421 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:15.421 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:15.422 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 43 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:15.422 | INFO     | __main__:run_single_trial:304 - Trial 43 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:15.527 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 44: paaia on memory_leak
+2026-03-16 00:22:15.527 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:15.528 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:15.528 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 44 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:15.529 | INFO     | __main__:run_single_trial:304 - Trial 44 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.5ms
+2026-03-16 00:22:15.630 | DEBUG    | src.evaluation.metrics:start_trial:135 - Started trial 45: paaia on memory_leak
+2026-03-16 00:22:15.630 | INFO     | src.aif.root_cause_analyzer:find_root_causes:91 - Finding root causes for slo_violated=True
+2026-03-16 00:22:15.631 | DEBUG    | src.aif.root_cause_analyzer:find_root_causes:97 - Found 0 potential causes: set()
+2026-03-16 00:22:15.631 | INFO     | src.evaluation.metrics:end_trial:187 - Trial 45 completed: Accuracy=0.50, MTTR=0.0s, Outcome=abstained
+2026-03-16 00:22:15.631 | INFO     | __main__:run_single_trial:304 - Trial 45 (paaia/memory_leak): Action=None, Outcome=abstained, Time=0.2ms
+2026-03-16 00:22:15.744 | INFO     | src.evaluation.metrics:save_results:319 - Saved 45 trial results to experiments/results/paaia_results.json
+2026-03-16 00:22:15.746 | INFO     | __main__:_save_comparison_summary:518 - Comparison summary saved to experiments/results/comparison_summary.json
+2026-03-16 00:22:15.746 | SUCCESS  | __main__:run_experiment:380 - Experiment completed!
+
+======================================================================
+METRICS SUMMARY: rule_based
+======================================================================
+Total Trials:          45
+
+Repair Accuracy:       27.1% (±23.2%)
+Mean Time to Repair:   0.00s (±0.00s)
+Abstention Rate:       0.0%
+Destructive Actions:   33.3%
+
+Outcome Breakdown:
+  ✓ Correct:           22
+  ✗ Incorrect:         8
+  ⚠ Destructive:       15
+  ⏸ Abstained:         0
+  - No Action:         0
+
+By Fault Type:
+  network_drop         Acc=0.0%, MTTR=0.0s
+  cpu_spike            Acc=50.0%, MTTR=0.0s
+  memory_leak          Acc=31.3%, MTTR=0.0s
+======================================================================
+
+
+======================================================================
+METRICS SUMMARY: aif_no_gate
+======================================================================
+Total Trials:          45
+
+Repair Accuracy:       100.0% (±0.0%)
+Mean Time to Repair:   0.00s (±0.00s)
+Abstention Rate:       0.0%
+Destructive Actions:   0.0%
+
+Outcome Breakdown:
+  ✓ Correct:           0
+  ✗ Incorrect:         0
+  ⚠ Destructive:       0
+  ⏸ Abstained:         0
+  - No Action:         45
+
+By Fault Type:
+  network_drop         Acc=100.0%, MTTR=0.0s
+  cpu_spike            Acc=100.0%, MTTR=0.0s
+  memory_leak          Acc=100.0%, MTTR=0.0s
+======================================================================
+
+
+======================================================================
+METRICS SUMMARY: paaia
+======================================================================
+Total Trials:          45
+
+Repair Accuracy:       50.0% (±0.0%)
+Mean Time to Repair:   0.00s (±0.00s)
+Abstention Rate:       100.0%
+Destructive Actions:   0.0%
+
+Outcome Breakdown:
+  ✓ Correct:           0
+  ✗ Incorrect:         0
+  ⚠ Destructive:       0
+  ⏸ Abstained:         45
+  - No Action:         0
+
+By Fault Type:
+  network_drop         Acc=50.0%, MTTR=0.0s
+  cpu_spike            Acc=50.0%, MTTR=0.0s
+  memory_leak          Acc=50.0%, MTTR=0.0s
+======================================================================
+
+
+======================================================================
+EXPERIMENT COMPLETE!
+======================================================================
+
+Results saved to: experiments/results/
+  • rule_based_results.json
+  • aif_no_gate_results.json
+  • paaia_results.json
+  • comparison_summary.json

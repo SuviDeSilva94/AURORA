@@ -1,0 +1,42 @@
+======================================================================
+EXPERIMENTAL RESULTS SUMMARY (For Thesis Chapter 4)
+======================================================================
+
+Rule-Based:
+  • Repair Accuracy (mean trial score): 25.9% (±22.7%); bootstrap 95% CI [23.8%, 27.9%]
+  • Repair correct (binary): 45.3% Wilson 95% [40.8%, 50.0%] (204/450 trials)
+  • Mean Time to Repair: 0.00s (±0.01s)
+  • Resolution Rate: 45.3%
+  • Abstention: 0.0% Wilson 95% [0.0%, 0.8%]
+  • Destructive: 33.3% Wilson 95% [29.1%, 37.8%]
+  • Correct Actions: 204/450
+
+AIF (No Gate):
+  • Repair Accuracy (mean trial score): 66.7% (±47.2%); bootstrap 95% CI [62.2%, 70.9%]
+  • Repair correct (binary): 66.7% Wilson 95% [62.2%, 70.9%] (300/450 trials)
+  • Mean Time to Repair: 0.01s (±0.03s)
+  • Resolution Rate: 66.7%
+  • Abstention: 0.0% Wilson 95% [0.0%, 0.8%]
+  • Destructive: 33.3% Wilson 95% [29.1%, 37.8%]
+  • Correct Actions: 300/450
+
+AURORA (Proposed):
+  • Repair Accuracy (mean trial score): 63.0% (±31.4%); bootstrap 95% CI [60.1%, 65.9%]
+  • Repair correct (binary): 36.7% Wilson 95% [32.3%, 41.2%] (165/450 trials)
+  • Mean Time to Repair: 0.01s (±0.03s)
+  • Resolution Rate: 36.7%
+  • Abstention: 63.3% Wilson 95% [58.8%, 67.7%]
+  • Destructive: 0.0% Wilson 95% [0.0%, 0.8%]
+  • Correct Actions: 165/450
+
+======================================================================
+KEY FINDINGS:
+======================================================================
+
+1. AURORA achieves 37.1 percentage points higher repair accuracy than rule-based baseline
+
+2. AURORA reduces destructive actions by 33.3 percentage points compared to AIF without gating
+
+3. AURORA demonstrates abstention capability (63.3%), refusing to act under uncertainty
+
+======================================================================

@@ -1,0 +1,202 @@
+[
+  {
+    "certainty_threshold": 0.7,
+    "vfe_threshold": 1.0,
+    "repair_accuracy": 0.15,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.7,
+    "vfe_threshold": 1.5,
+    "repair_accuracy": 0.15,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.7,
+    "vfe_threshold": 2.0,
+    "repair_accuracy": 0.15,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.7,
+    "vfe_threshold": 2.5,
+    "repair_accuracy": 0.15,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.7,
+    "vfe_threshold": 3.0,
+    "repair_accuracy": 0.1688888888888889,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.022222222222222223
+  },
+  {
+    "certainty_threshold": 0.75,
+    "vfe_threshold": 1.0,
+    "repair_accuracy": 0.15944444444444444,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.011111111111111112
+  },
+  {
+    "certainty_threshold": 0.75,
+    "vfe_threshold": 1.5,
+    "repair_accuracy": 0.17888888888888888,
+    "abstention_rate": 2.2222222222222223,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.022222222222222223
+  },
+  {
+    "certainty_threshold": 0.75,
+    "vfe_threshold": 2.0,
+    "repair_accuracy": 0.17833333333333332,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.03333333333333333
+  },
+  {
+    "certainty_threshold": 0.75,
+    "vfe_threshold": 2.5,
+    "repair_accuracy": 0.15,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.75,
+    "vfe_threshold": 3.0,
+    "repair_accuracy": 0.155,
+    "abstention_rate": 1.1111111111111112,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.8,
+    "vfe_threshold": 1.0,
+    "repair_accuracy": 0.155,
+    "abstention_rate": 1.1111111111111112,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.8,
+    "vfe_threshold": 1.5,
+    "repair_accuracy": 0.17833333333333332,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.03333333333333333
+  },
+  {
+    "certainty_threshold": 0.8,
+    "vfe_threshold": 2.0,
+    "repair_accuracy": 0.15,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.8,
+    "vfe_threshold": 2.5,
+    "repair_accuracy": 0.16944444444444443,
+    "abstention_rate": 2.2222222222222223,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.011111111111111112
+  },
+  {
+    "certainty_threshold": 0.8,
+    "vfe_threshold": 3.0,
+    "repair_accuracy": 0.16444444444444445,
+    "abstention_rate": 1.1111111111111112,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.011111111111111112
+  },
+  {
+    "certainty_threshold": 0.85,
+    "vfe_threshold": 1.0,
+    "repair_accuracy": 0.16499999999999998,
+    "abstention_rate": 3.3333333333333335,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.85,
+    "vfe_threshold": 1.5,
+    "repair_accuracy": 0.16,
+    "abstention_rate": 2.2222222222222223,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.85,
+    "vfe_threshold": 2.0,
+    "repair_accuracy": 0.155,
+    "abstention_rate": 1.1111111111111112,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.85,
+    "vfe_threshold": 2.5,
+    "repair_accuracy": 0.155,
+    "abstention_rate": 1.1111111111111112,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.85,
+    "vfe_threshold": 3.0,
+    "repair_accuracy": 0.16499999999999998,
+    "abstention_rate": 3.3333333333333335,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.9,
+    "vfe_threshold": 1.0,
+    "repair_accuracy": 0.16,
+    "abstention_rate": 2.2222222222222223,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.9,
+    "vfe_threshold": 1.5,
+    "repair_accuracy": 0.15,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.9,
+    "vfe_threshold": 2.0,
+    "repair_accuracy": 0.15944444444444444,
+    "abstention_rate": 0.0,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.011111111111111112
+  },
+  {
+    "certainty_threshold": 0.9,
+    "vfe_threshold": 2.5,
+    "repair_accuracy": 0.16,
+    "abstention_rate": 2.2222222222222223,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.0
+  },
+  {
+    "certainty_threshold": 0.9,
+    "vfe_threshold": 3.0,
+    "repair_accuracy": 0.16444444444444445,
+    "abstention_rate": 1.1111111111111112,
+    "destructive_action_rate": 0.0,
+    "resolution_rate": 0.011111111111111112
+  }
+]

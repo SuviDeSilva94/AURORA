@@ -1,0 +1,80 @@
+---
+alwaysApply: true
+description: Master's thesis requirements and architecture for AURORA system
+---
+
+# Thesis Requirements - Stockholm University
+
+** :** Praveen Kumar Donta  
+**Topic:** Distributed Agentic Micro-Agent for Resilience in the Computing Continuum
+
+## Core Requirements (MUST FOLLOW)
+
+### 1. Multiple Small Micro-Agents (NOT one big LLM)
+- Each agent performs ONE small intelligent task
+- Runs on resource-constrained devices (Raspberry Pi, IoT, edge)
+- Examples: BandwidthCheckAgent, CameraTrafficAgent, NodeLoadAgent, NetworkDelayAgent
+
+### 2. CCTV Use Case (EXACT scenario)
+- Raspberry Pi processing live CCTV security camera footage at edge
+- SLOs: 30 FPS, delay < 33ms, throughput > 1.6 MB/s, success rate ≥95%
+- Fault: Network congestion → FPS drop, delay spike to 80ms, throughput drop
+
+### 3. Root Cause Identification (CRITICAL - Two-Step Process)
+
+**STEP 1:** Identify EXACT root cause using Bayesian Networks
+  - Example causes: "Camera #3 sending excessive frames", "bandwidth drop on link", "node overloaded"
+  - Use pgmpy Bayesian Network from Sedlak et al. (2024)
+  - Multiple parallel agents provide consensus
+  - Must achieve HIGH CERTAINTY (≥85%)
+
+**STEP 2:** Apply VFE check AFTER root cause proposal
+  - VFE below threshold confirms it is safe to act
+  - Only proceed if VFE < threshold
+
+**STEP 3:** Execute healing action (rebalance, offload, switch endpoint, isolate node)
+
+### 4. Foundation Papers
+- **Sedlak et al. (2024)** "Equilibrium in Computing Continuum through Active Inference"
+  - Use pgmpy Bayesian Network structure
+  - Agent/FogNode classes
+  - Markov blankets, causal diagnosis
+  
+- **Donta et al. (2025)** "Resilient by Design" (arXiv:2511.07202)
+  - PAIR-Agent concepts for causal fault graphs
+  - VFE-based certainty on root cause
+
+### 5. Architecture Files
+```
+[src/aif/bayesian_network.py](mdc:src/aif/bayesian_network.py) - Bayesian Network from Sedlak
+[src/aif/root_cause_analyzer.py](mdc:src/aif/root_cause_analyzer.py) - Root cause discovery
+[src/aif/vfe_compute.py](mdc:src/aif/vfe_compute.py) - VFE computation and safe-execution threshold
+[src/aif/multi_agent_system.py](mdc:src/aif/multi_agent_system.py) - Parallel micro-agents
+[src/aif/specialized_agents.py](mdc:src/aif/specialized_agents.py) - CCTV-specific agents
+[src/aif/fognode.py](mdc:src/aif/fognode.py) - Distributed coordination
+[src/utils/cctv_config.py](mdc:src/utils/cctv_config.py) - CCTV configuration
+```
+
+### 6. Metrics (Required for Thesis)
+- Repair accuracy (% correct root cause identification)
+- MTTR (Mean Time To Repair)
+- Abstention rate (when uncertainty too high)
+- Destructive action rate (incorrect actions)
+
+### 7. Self-Healing Definition
+Self-healing = Identify root cause + Mitigate properly
+- Auto-recovery, no human intervention
+- Safe (refuse to act if uncertain)
+- Distributed (runs across continuum)
+
+## Two-Step Process (CRITICAL)
+1. **Root Cause Identification** with certainty ≥85% (multiple agents consensus)
+2. **VFE check** (below threshold) confirms safe to execute
+3. **Execute Healing Action** only if both checks pass
+
+## Code Style
+- Clean, well-commented
+- Ready for thesis defense
+- Reproducible experiments
+- Clear separation: root cause → VFE check → healing
+- Parallel micro-agents for specialized checks

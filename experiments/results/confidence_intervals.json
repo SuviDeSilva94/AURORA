@@ -1,0 +1,107 @@
+{
+  "confidence": 0.95,
+  "agents": {
+    "rule_based": {
+      "wilson": {
+        "repair_correct": {
+          "k": 204,
+          "n": 450,
+          "p_hat": 0.4533333333333333,
+          "ci_low": 0.40792574250488783,
+          "ci_high": 0.49953095604368075,
+          "confidence": 0.95
+        },
+        "abstention": {
+          "k": 0,
+          "n": 450,
+          "p_hat": 0.0,
+          "ci_low": 8.673617379884035e-19,
+          "ci_high": 0.008464627306090936,
+          "confidence": 0.95
+        },
+        "destructive": {
+          "k": 150,
+          "n": 450,
+          "p_hat": 0.3333333333333333,
+          "ci_low": 0.29135034272202565,
+          "ci_high": 0.3781378663800047,
+          "confidence": 0.95
+        }
+      },
+      "bootstrap_mean_repair_accuracy": {
+        "mean": 0.25866666666666666,
+        "ci_low": 0.2382222222222222,
+        "ci_high": 0.2787805555555555,
+        "n_trials": 450
+      }
+    },
+    "aif_no_gate": {
+      "wilson": {
+        "repair_correct": {
+          "k": 300,
+          "n": 450,
+          "p_hat": 0.6666666666666666,
+          "ci_low": 0.6218621336199952,
+          "ci_high": 0.7086496572779744,
+          "confidence": 0.95
+        },
+        "abstention": {
+          "k": 0,
+          "n": 450,
+          "p_hat": 0.0,
+          "ci_low": 8.673617379884035e-19,
+          "ci_high": 0.008464627306090936,
+          "confidence": 0.95
+        },
+        "destructive": {
+          "k": 150,
+          "n": 450,
+          "p_hat": 0.3333333333333333,
+          "ci_low": 0.29135034272202565,
+          "ci_high": 0.3781378663800047,
+          "confidence": 0.95
+        }
+      },
+      "bootstrap_mean_repair_accuracy": {
+        "mean": 0.6666666666666666,
+        "ci_low": 0.6222222222222222,
+        "ci_high": 0.7089444444444442,
+        "n_trials": 450
+      }
+    },
+    "aurora": {
+      "wilson": {
+        "repair_correct": {
+          "k": 165,
+          "n": 450,
+          "p_hat": 0.36666666666666664,
+          "ci_low": 0.32344499232747725,
+          "ci_high": 0.41214557495414705,
+          "confidence": 0.95
+        },
+        "abstention": {
+          "k": 285,
+          "n": 450,
+          "p_hat": 0.6333333333333333,
+          "ci_low": 0.587854425045853,
+          "ci_high": 0.6765550076725227,
+          "confidence": 0.95
+        },
+        "destructive": {
+          "k": 0,
+          "n": 450,
+          "p_hat": 0.0,
+          "ci_low": 8.673617379884035e-19,
+          "ci_high": 0.008464627306090936,
+          "confidence": 0.95
+        }
+      },
+      "bootstrap_mean_repair_accuracy": {
+        "mean": 0.63,
+        "ci_low": 0.6005527777777777,
+        "ci_high": 0.6594472222222221,
+        "n_trials": 450
+      }
+    }
+  }
+}

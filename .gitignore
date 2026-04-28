@@ -1,0 +1,72 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Logs
+logs/
+*.log
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/
+*.csv
+*.json
+*.pkl
+*.h5
+
+# Models
+models/
+*.pth
+*.pt
+*.ckpt
+
+# Kubernetes
+kubeconfig
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Environment
+.env
+.env.local
+
+
