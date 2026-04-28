@@ -125,4 +125,4 @@ We actively encourage researchers in the fields of **IoT Resilience, Edge/Fog Co
 }
 ```
 
-**Contact:** thde1580@student.su.se | {alfreds.lapkovskis, praveen}@dsv.su.se
+**Contact:** thde1580@student.su.se | {Suvi De Silva}@dsv.su.se
