@@ -78,3 +78,7 @@ temp/
 # Working Documents
 paper/
 paper_sections/
+
+# OS Generated Files
+.DS_Store
+**/.DS_Store
