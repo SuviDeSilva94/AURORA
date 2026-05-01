@@ -30,10 +30,23 @@ from src.evaluation.proportion_ci import (
     wilson_summary_for_agent_metrics,
 )
 
-# Set plot style
-sns.set_theme(style="whitegrid", palette="muted")
-plt.rcParams['figure.figsize'] = (12, 6)
-plt.rcParams['font.size'] = 11
+import scienceplots
+
+# Apply IEEE formatting with SciencePlots
+plt.style.use(["science", "ieee", "no-latex"])
+
+colors = ['#0C5DA5', '#00B945', '#FF9500', '#845B97', '#474747', '#9E9E9E']
+plt.rcParams.update({
+    "figure.figsize": (12, 6),
+    "figure.dpi": 300,
+    "font.size": 12,
+    "axes.titlesize": 14,
+    "axes.labelsize": 12,
+    "xtick.labelsize": 11,
+    "ytick.labelsize": 11,
+    "legend.fontsize": 11,
+    "axes.prop_cycle": plt.cycler(color=colors),
+})
 
 
 class ResultsAnalyzer:
