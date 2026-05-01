@@ -466,6 +466,293 @@ class ResultsAnalyzer:
         
         logger.info(f"Saved thesis summary to {summary_file}")
     
+    # ------------------------------------------------------------------
+    # Helpers
+    # ------------------------------------------------------------------
+
+    def _load_diagnostics(self, agent_key: str) -> List[Dict]:
+        path = self.results_dir / f"{agent_key}_trial_diagnostics.json"
+        if not path.exists():
+            logger.warning(f"Diagnostics file not found: {path}")
+            return []
+        with open(path) as f:
+            return json.load(f)
+
+    # ------------------------------------------------------------------
+    # New figures
+    # ------------------------------------------------------------------
+
+    def plot_vfe_distribution(self):
+        """
+        Fig: VFE Score Distribution by Fault Type (AURORA only).
+
+        Histogram + KDE for each fault class with the VFE gate threshold
+        drawn as a vertical dashed line.  Shows WHY abstention occurs and
+        validates the threshold choice.
+        """
+        diag = self._load_diagnostics("aurora")
+        if not diag:
+            return
+
+        fault_colors = {
+            "network_drop": "#2196F3",
+            "cpu_spike":    "#FF5722",
+            "memory_leak":  "#4CAF50",
+        }
+        fault_labels = {
+            "network_drop": "Network Drop",
+            "cpu_spike":    "CPU Spike",
+            "memory_leak":  "Memory Leak",
+        }
+        vfe_gate = 3.85
+
+        fig, ax = plt.subplots(figsize=(10, 5))
+
+        for fault, color in fault_colors.items():
+            vfes = [t["vfe"] for t in diag if t["fault_type"] == fault]
+            ax.hist(
+                vfes,
+                bins=30,
+                alpha=0.45,
+                color=color,
+                label=fault_labels[fault],
+                edgecolor="white",
+                linewidth=0.4,
+            )
+            # KDE overlay
+            from scipy.stats import gaussian_kde
+            kde = gaussian_kde(vfes, bw_method=0.3)
+            xs = np.linspace(min(vfes) - 0.2, max(vfes) + 0.2, 300)
+            scale = len(vfes) * (max(vfes) - min(vfes)) / 30
+            ax.plot(xs, kde(xs) * scale, color=color, linewidth=2)
+
+        ax.axvline(x=vfe_gate, color="crimson", linestyle="--", linewidth=1.8,
+                   label=f"VFE gate (F = {vfe_gate})")
+        ax.set_xlabel("Variational Free Energy (F)", fontweight="bold")
+        ax.set_ylabel("Trial Count", fontweight="bold")
+        ax.set_title("VFE Score Distribution by Fault Type (AURORA, 450 trials)",
+                     fontweight="bold")
+        ax.legend()
+
+        # Annotate gate regions
+        ymax = ax.get_ylim()[1]
+        ax.text(vfe_gate - 0.15, ymax * 0.92, "Execute\n(F < gate)",
+                ha="right", color="green", fontsize=9, fontstyle="italic")
+        ax.text(vfe_gate + 0.15, ymax * 0.92, "Abstain\n(F ≥ gate)",
+                ha="left", color="crimson", fontsize=9, fontstyle="italic")
+
+        plt.tight_layout()
+        out = self.results_dir / "vfe_distribution.png"
+        plt.savefig(out, dpi=300, bbox_inches="tight")
+        logger.info(f"Saved VFE distribution to {out}")
+        plt.show()
+
+    def plot_safety_gate_scatter(self):
+        """
+        Fig: Safety Gate Decision Space — VFE vs Certainty (AURORA).
+
+        One point per trial, coloured by outcome (correct / abstained).
+        Gate boundaries drawn as dashed lines, quadrants labelled.
+        Shows that the VFE gate is the operative safety mechanism.
+        """
+        diag = self._load_diagnostics("aurora")
+        if not diag:
+            return
+
+        vfe_gate      = 3.85
+        cert_gate     = 0.70
+        outcome_style = {
+            "correct":  {"color": "#2e7d32", "marker": "o", "label": "Correct execution"},
+            "abstained": {"color": "#e65100", "marker": "^", "label": "Abstained (high VFE)"},
+        }
+
+        fig, ax = plt.subplots(figsize=(9, 6))
+
+        rng = np.random.default_rng(42)
+
+        for outcome, style in outcome_style.items():
+            xs = np.array([t["certainty"] for t in diag if t["outcome"] == outcome])
+            ys = np.array([t["vfe"]       for t in diag if t["outcome"] == outcome])
+            # Add small jitter so overlapping points are visible
+            xs = xs + rng.normal(0, 0.004, size=len(xs))
+            ys = ys + rng.normal(0, 0.018, size=len(ys))
+            ax.scatter(xs, ys, c=style["color"], marker=style["marker"],
+                       alpha=0.45, s=22, label=style["label"], edgecolors="none")
+
+        ax.axhline(y=vfe_gate,  color="crimson",   linestyle="--", linewidth=1.6,
+                   label=f"VFE gate  F = {vfe_gate}")
+        ax.axvline(x=cert_gate, color="steelblue", linestyle="--", linewidth=1.6,
+                   label=f"Certainty gate  τ = {cert_gate}")
+
+        # Quadrant annotations — placed in corners away from dense clusters
+        ax.text(0.975, vfe_gate - 0.15, "Safe Zone  (execute)",
+                ha="right", va="top", fontsize=8.5, color="#2e7d32", fontstyle="italic",
+                transform=ax.get_yaxis_transform(),
+                bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.7))
+        ax.text(0.975, vfe_gate + 0.15, "High Uncertainty  (abstain)",
+                ha="right", va="bottom", fontsize=8.5, color="crimson", fontstyle="italic",
+                transform=ax.get_yaxis_transform(),
+                bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.7))
+
+        ax.set_xlabel("Certainty Score", fontweight="bold")
+        ax.set_ylabel("Variational Free Energy (F)", fontweight="bold")
+        ax.set_title("Safety Gate Decision Space (AURORA, 450 trials)", fontweight="bold")
+        ax.legend(fontsize=9)
+
+        plt.tight_layout()
+        out = self.results_dir / "safety_gate_scatter.png"
+        plt.savefig(out, dpi=300, bbox_inches="tight")
+        logger.info(f"Saved safety gate scatter to {out}")
+        plt.show()
+
+    def plot_outcome_composition(self):
+        """
+        Fig: Per-Fault Outcome Composition — stacked bars for each
+        agent × fault type showing correct / abstained / destructive /
+        incorrect counts.  More informative than aggregated accuracy alone.
+        """
+        agent_keys  = ["rule_based", "aif_no_gate", "aurora"]
+        fault_types = ["network_drop", "cpu_spike", "memory_leak"]
+        outcome_cols = {
+            "correct":     "#4CAF50",
+            "abstained":   "#FF9800",
+            "destructive": "#f44336",
+            "incorrect":   "#9E9E9E",
+        }
+
+        # Build count table: agent → fault → outcome → count
+        counts: Dict[str, Dict[str, Dict[str, int]]] = {}
+        for ak in agent_keys:
+            diag = self._load_diagnostics(ak)
+            counts[ak] = {}
+            for ft in fault_types:
+                trials = [t for t in diag if t["fault_type"] == ft]
+                counts[ak][ft] = {oc: 0 for oc in outcome_cols}
+                for t in trials:
+                    oc = t.get("outcome", "incorrect")
+                    if oc in counts[ak][ft]:
+                        counts[ak][ft][oc] += 1
+                    else:
+                        counts[ak][ft]["incorrect"] += 1
+
+        agent_labels = {
+            "rule_based":  "Rule-Based",
+            "aif_no_gate": "AIF (No Gate)",
+            "aurora":      "AURORA",
+        }
+        fault_labels = {
+            "network_drop": "Network\nDrop",
+            "cpu_spike":    "CPU\nSpike",
+            "memory_leak":  "Memory\nLeak",
+        }
+
+        n_agents = len(agent_keys)
+        n_faults = len(fault_types)
+        x        = np.arange(n_faults)
+        width    = 0.25
+
+        fig, ax = plt.subplots(figsize=(13, 6))
+
+        for i, ak in enumerate(agent_keys):
+            bottoms = np.zeros(n_faults)
+            for oc, color in outcome_cols.items():
+                vals = np.array([counts[ak][ft][oc] for ft in fault_types], dtype=float)
+                bars = ax.bar(
+                    x + (i - 1) * width,
+                    vals,
+                    width,
+                    bottom=bottoms,
+                    color=color,
+                    label=oc.capitalize() if i == 0 else "_nolegend_",
+                    edgecolor="white",
+                    linewidth=0.5,
+                )
+                bottoms += vals
+
+            # Agent label below each group
+            for j in range(n_faults):
+                ax.text(
+                    x[j] + (i - 1) * width,
+                    -8,
+                    agent_labels[ak],
+                    ha="center",
+                    va="top",
+                    fontsize=7,
+                    rotation=45,
+                )
+
+        ax.set_xticks(x)
+        ax.set_xticklabels([fault_labels[f] for f in fault_types], fontsize=11)
+        ax.set_ylabel("Trial Count (out of 150)", fontweight="bold")
+        ax.set_title("Per-Fault Outcome Composition by Agent", fontweight="bold")
+        ax.set_ylim(-25, 165)
+        ax.legend(title="Outcome", loc="upper right")
+        ax.axhline(y=0, color="black", linewidth=0.6)
+
+        plt.tight_layout()
+        out = self.results_dir / "outcome_composition.png"
+        plt.savefig(out, dpi=300, bbox_inches="tight")
+        logger.info(f"Saved outcome composition to {out}")
+        plt.show()
+
+    def plot_abstention_triggers(self):
+        """
+        Fig: Abstention Trigger Breakdown (AURORA only).
+
+        Shows which safety gate caused each abstention: high_vfe,
+        low_certainty, or ambiguous_ranking.  Demonstrates empirically
+        that the VFE gate is the operative safety mechanism.
+        """
+        diag = self._load_diagnostics("aurora")
+        if not diag:
+            return
+
+        reason_map = {
+            "high_vfe":           "High VFE\n(F ≥ gate)",
+            "low_certainty":      "Low Certainty\n(τ < gate)",
+            "ambiguous_ranking":  "Ambiguous\nRanking",
+            "none":               "Executed\n(no abstention)",
+        }
+        reason_colors = {
+            "high_vfe":           "#e65100",
+            "low_certainty":      "#1565C0",
+            "ambiguous_ranking":  "#6A1B9A",
+            "none":               "#2e7d32",
+        }
+
+        reason_counts = {k: 0 for k in reason_map}
+        for t in diag:
+            r = t.get("abstain_reason", "none")
+            if r not in reason_counts:
+                r = "none"
+            reason_counts[r] += 1
+
+        labels  = [reason_map[k]   for k in reason_map if reason_counts[k] > 0]
+        values  = [reason_counts[k] for k in reason_map if reason_counts[k] > 0]
+        colors  = [reason_colors[k] for k in reason_map if reason_counts[k] > 0]
+
+        fig, ax = plt.subplots(figsize=(8, 5))
+        bars = ax.bar(range(len(labels)), values, color=colors, edgecolor="white",
+                      linewidth=0.8, width=0.5)
+
+        for bar, v in zip(bars, values):
+            ax.text(bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + 4,
+                    f"{v}\n({v/len(diag)*100:.1f}%)",
+                    ha="center", va="bottom", fontsize=10, fontweight="bold")
+
+        ax.set_xticks(range(len(labels)))
+        ax.set_xticklabels(labels, fontsize=10)
+        ax.set_ylabel("Number of Trials", fontweight="bold")
+        ax.set_title("AURORA Abstention Trigger Breakdown (450 trials)", fontweight="bold")
+        ax.set_ylim(0, max(values) * 1.2)
+
+        plt.tight_layout()
+        out = self.results_dir / "abstention_triggers.png"
+        plt.savefig(out, dpi=300, bbox_inches="tight")
+        logger.info(f"Saved abstention triggers to {out}")
+        plt.show()
+
     def _format_agent_name(self, name: str) -> str:
         """Format agent name for display"""
         mapping = {
@@ -518,11 +805,27 @@ class ResultsAnalyzer:
         # 4. Statistical tests
         logger.info("Running statistical significance tests...")
         self.statistical_significance_test()
-        
-        # 5. Thesis summary
+
+        # 5. VFE distribution
+        logger.info("Generating VFE distribution...")
+        self.plot_vfe_distribution()
+
+        # 6. Safety gate scatter
+        logger.info("Generating safety gate scatter...")
+        self.plot_safety_gate_scatter()
+
+        # 7. Outcome composition
+        logger.info("Generating outcome composition...")
+        self.plot_outcome_composition()
+
+        # 8. Abstention triggers
+        logger.info("Generating abstention triggers...")
+        self.plot_abstention_triggers()
+
+        # 9. Thesis summary
         logger.info("Generating thesis summary...")
         self.generate_thesis_summary()
-        
+
         logger.success("\n✓ Analysis complete! Check experiments/results/ for outputs")
 
 
