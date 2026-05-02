@@ -223,87 +223,100 @@ class RootCauseAnalyzer:
         
         return ancestors
     
+    def _benign_counterfactual(self, cause: str, current_value: Any) -> Optional[Any]:
+        """
+        Map a cause variable's observed value to its benign counterfactual,
+        respecting per-variable CPT state vocabularies (e.g. ``network_quality``
+        uses ``low/medium/high``; ``cpu/memory/delay`` use ``normal/high``).
+
+        Numeric values are halved (floor at 0). Returns ``None`` for unknown
+        string labels so the caller can abort cleanly.
+        """
+        if isinstance(current_value, (int, float)):
+            return int(max(0, float(current_value) * 0.5))
+        if not isinstance(current_value, str):
+            return None
+        v = current_value.lower()
+        benign_by_cause = {
+            "network_quality": "high",
+            "cpu": "normal",
+            "memory": "normal",
+            "delay": "normal",
+        }
+        worst_by_cause = {
+            "network_quality": "low",
+            "cpu": "high",
+            "memory": "high",
+            "delay": "high",
+        }
+        if cause in benign_by_cause:
+            benign = benign_by_cause[cause]
+            worst = worst_by_cause[cause]
+            return worst if v == benign else benign
+        flips = {"high": "normal", "normal": "high", "low": "high", "medium": "high"}
+        return flips.get(v)
+
     def _compute_causal_impact(
-        self, 
-        cause: str, 
+        self,
+        cause: str,
         symptom: str,
         observation: Dict[str, Any]
     ) -> float:
         """
-        Compute how much the cause variable impacts the symptom.
-        
-        This uses counterfactual reasoning:
-        "If the cause had a different value, how would the symptom change?"
-        
-        Impact = P(symptom=bad | cause=observed) - P(symptom=bad | cause=good)
+        Interventional impact of ``cause`` on ``symptom`` via Pearl do-calculus:
+
+            impact = | P(symptom=True | do(cause=current), Z)
+                    - P(symptom=True | do(cause=benign),   Z) |
+
+        ``pgmpy.CausalInference`` performs graph mutilation (severs incoming
+        edges to the do-variable) and any required backdoor adjustment
+        internally. We additionally strip descendants of ``cause`` from the
+        conditioning set ``Z`` because conditioning on a descendant of an
+        intervened variable opens a non-causal path and biases the post-do
+        marginal — pgmpy's mutilation alone does not handle that.
         """
         try:
             import networkx as nx
             descendants = nx.descendants(self.causal_graph, cause)
-            
-            # Current state: P(symptom | cause=observed). 
-            # To measure true interventional effect do(cause), we must NOT condition on its descendants (mediators).
-            evidence_current = {k: v for k, v in observation.items() 
-                               if k in self.causal_graph.nodes() and k != symptom and k not in descendants}
-            
-            result_current = self.model.inference_engine.query(
+
+            ev = {
+                k: v for k, v in observation.items()
+                if k in self.causal_graph.nodes()
+                and k != symptom
+                and k != cause
+                and k not in descendants
+            }
+
+            ci = self.model.causal_inference
+
+            r_curr = ci.query(
                 variables=[symptom],
-                evidence=evidence_current
+                do={cause: observation[cause]},
+                evidence=ev,
+                adjustment_set=[],
+                show_progress=False,
             )
-            prob_current = result_current.values[1] if len(result_current.values) > 1 else result_current.values[0]
-            
-            # Counterfactual: flip cause to a "better" discrete state (matches BN CPTs)
-            evidence_counterfactual = evidence_current.copy()
-            current_value = observation[cause]
-            if isinstance(current_value, (int, float)):
-                counterfactual_value = max(0, float(current_value) * 0.5)
-                evidence_counterfactual[cause] = int(counterfactual_value)
-            elif isinstance(current_value, str):
-                v = current_value.lower()
-                # CPT states differ per variable; never use invalid labels (e.g. "normal" for network_quality).
-                benign_by_cause = {
-                    "network_quality": "high",
-                    "cpu": "normal",
-                    "memory": "normal",
-                    "delay": "normal",
-                }
-                worst_by_cause = {
-                    "network_quality": "low",
-                    "cpu": "high",
-                    "memory": "high",
-                    "delay": "high",
-                }
-                if cause in benign_by_cause:
-                    benign = benign_by_cause[cause]
-                    worst = worst_by_cause[cause]
-                    evidence_counterfactual[cause] = worst if v == benign else benign
-                else:
-                    flips = {
-                        "high": "normal",
-                        "normal": "high",
-                        "low": "high",
-                        "medium": "high",
-                    }
-                    alt = flips.get(v)
-                    if alt is None:
-                        return 0.5
-                    evidence_counterfactual[cause] = alt
-            else:
+            prob_current = (
+                r_curr.values[1] if len(r_curr.values) > 1 else r_curr.values[0]
+            )
+
+            cf = self._benign_counterfactual(cause, observation[cause])
+            if cf is None:
                 return 0.5
-            
-            result_counter = self.model.inference_engine.query(
+
+            r_cf = ci.query(
                 variables=[symptom],
-                evidence=evidence_counterfactual
+                do={cause: cf},
+                evidence=ev,
+                adjustment_set=[],
+                show_progress=False,
             )
-            prob_counter = result_counter.values[1] if len(result_counter.values) > 1 else result_counter.values[0]
-            
-            # Impact = How much the symptom probability changed
-            impact = abs(prob_current - prob_counter)
-            
+            prob_cf = r_cf.values[1] if len(r_cf.values) > 1 else r_cf.values[0]
+
+            impact = abs(prob_current - prob_cf)
             logger.debug(f"Causal impact {cause}→{symptom}: {impact:.3f}")
-            
             return impact
-            
+
         except Exception as e:
             logger.warning(f"Could not compute causal impact for {cause}: {e}")
             return 0.0

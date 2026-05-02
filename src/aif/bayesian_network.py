@@ -18,7 +18,7 @@ from pgmpy.estimators import (
     MaximumLikelihoodEstimator,
     BayesianEstimator
 )
-from pgmpy.inference import VariableElimination
+from pgmpy.inference import VariableElimination, CausalInference
 from loguru import logger
 
 
@@ -36,7 +36,22 @@ class EOSCModel:
         self.model = model
         self.markov_blanket = markov_blanket
         self.inference_engine = VariableElimination(model)
-    
+        self._causal_inference: Optional[CausalInference] = None
+
+    @property
+    def causal_inference(self) -> CausalInference:
+        """
+        Cached pgmpy ``CausalInference`` for Pearl do-calculus queries
+        ``P(Y | do(X), Z)``. pgmpy performs graph mutilation (severs incoming
+        edges to do-variables) and backdoor adjustment internally.
+
+        Built lazily on first use; ``refit_cctv_benchmark_cpts`` returns a
+        fresh ``EOSCModel``, so cache invalidation is automatic.
+        """
+        if self._causal_inference is None:
+            self._causal_inference = CausalInference(self.model)
+        return self._causal_inference
+
     def predict(self, evidence: Dict[str, Any]) -> Dict[str, Any]:
         """
         Predict outcomes given evidence

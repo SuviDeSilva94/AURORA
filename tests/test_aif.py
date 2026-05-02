@@ -269,6 +269,145 @@ class TestAgent:
         print(f"✓ SLO evaluation detected {len(violations)} violations")
 
 
+class TestDoCalculus:
+    """
+    Pearl do-calculus integration tests.
+
+    AURORA's CCTV BN is fully observed and ``slo_violated`` is a leaf — by the
+    backdoor criterion, the interventional and observational queries coincide
+    numerically, so the swap to ``CausalInference.query(do=...)`` must not
+    move the existing experimental results. The confounder test proves that
+    when the structural assumption is violated, the new path actually does
+    graph mutilation (i.e. it isn't observational conditioning in disguise).
+    """
+
+    @staticmethod
+    def _aurora_model():
+        rng = np.random.default_rng(7)
+        rows = []
+        for _ in range(400):
+            nq = rng.choice(["low", "medium", "high"])
+            mem = rng.choice(["normal", "high"])
+            cpu = rng.choice(["normal", "high"])
+            delay = rng.choice(["normal", "high"])
+            bad = (nq == "low") or (cpu == "high" and delay == "high") or mem == "high"
+            rows.append({
+                "network_quality": nq, "memory": mem, "cpu": cpu,
+                "delay": delay, "slo_violated": bool(bad or rng.random() < 0.15),
+            })
+        return fit_eosc_cctv_benchmark_dag(rows)
+
+    @staticmethod
+    def _legacy_p_clear(model, evidence):
+        """Pre-do-calculus observational ``P(slo_violated=False | evidence)``."""
+        ev = {k: v for k, v in evidence.items()
+              if k in model.model.nodes() and k != "slo_violated"}
+        qr = model.inference_engine.query(variables=["slo_violated"], evidence=ev)
+        vals = np.asarray(qr.values).flatten()
+        cpd = model.model.get_cpds("slo_violated")
+        states = list(cpd.state_names["slo_violated"])
+        for i, s in enumerate(states):
+            if s is False:
+                return float(vals[i])
+        return float(vals[0])
+
+    def test_do_calculus_equivalence_on_aurora_dag(self):
+        """
+        On the AURORA leaf-node DAG, do-calculus must agree with the legacy
+        observational override to within floating-point noise. This proves the
+        switch to ``CausalInference`` does not perturb published experiment
+        numbers.
+        """
+        model = self._aurora_model()
+        vc = VFEComputer()
+        actions = ["restart", "scale_up", "offload_to_fog", "reduce_load"]
+        observations = [
+            {"network_quality": "low", "memory": "normal", "cpu": "high", "delay": "high"},
+            {"network_quality": "high", "memory": "high", "cpu": "high", "delay": "normal"},
+            {"network_quality": "medium", "memory": "normal", "cpu": "normal", "delay": "high"},
+            {"network_quality": "high", "memory": "normal", "cpu": "high", "delay": "normal"},
+        ]
+        for obs in observations:
+            for act in actions:
+                patch = healing_hypothesis_for_action(act)
+                # Legacy: pre-merge patch into evidence and query observationally.
+                merged = {**obs, **patch}
+                p_legacy = self._legacy_p_clear(model, merged)
+                # New path: do=patch, evidence=obs minus patched keys.
+                obs_no_patch = {k: v for k, v in obs.items() if k not in patch}
+                p_do = vc._prob_slo_cleared(model, obs_no_patch, do=patch)
+                assert p_do == pytest.approx(p_legacy, abs=1e-9), (
+                    f"do/obs disagree for action={act} obs={obs}: "
+                    f"do={p_do} legacy={p_legacy}"
+                )
+
+    def test_do_calculus_diverges_under_confounding(self):
+        """
+        On a synthetic DAG with an unobserved-effect-style confounder, the
+        observational and interventional queries must produce *different*
+        marginals. This is the proof that pgmpy is mutilating the graph
+        rather than just renaming a dictionary key.
+
+        Structure:  U -> X,  U -> Y,  X -> Y
+        With U strongly biasing both X and Y, P(Y | X=1) >> P(Y | do(X=1)).
+        """
+        from pgmpy.models import BayesianNetwork
+        from pgmpy.factors.discrete import TabularCPD
+        from pgmpy.inference import VariableElimination, CausalInference
+
+        bn = BayesianNetwork([("U", "X"), ("U", "Y"), ("X", "Y")])
+        cpd_u = TabularCPD("U", 2, [[0.5], [0.5]])
+        cpd_x = TabularCPD("X", 2,
+                           [[0.9, 0.1],
+                            [0.1, 0.9]],
+                           evidence=["U"], evidence_card=[2])
+        # Y depends much more on U than on X.
+        cpd_y = TabularCPD(
+            "Y", 2,
+            [[0.95, 0.90, 0.10, 0.05],
+             [0.05, 0.10, 0.90, 0.95]],
+            evidence=["U", "X"], evidence_card=[2, 2],
+        )
+        bn.add_cpds(cpd_u, cpd_x, cpd_y)
+        assert bn.check_model()
+
+        ve = VariableElimination(bn)
+        ci = CausalInference(bn)
+
+        p_obs = float(ve.query(["Y"], evidence={"X": 1}, show_progress=False).values[1])
+        p_do = float(ci.query(variables=["Y"], do={"X": 1}, evidence={},
+                              show_progress=False).values[1])
+        assert abs(p_obs - p_do) > 0.01, (
+            f"On a confounded DAG, P(Y|X) and P(Y|do(X)) must differ; "
+            f"got obs={p_obs:.4f}, do={p_do:.4f}"
+        )
+
+    def test_empty_do_passes_through_to_observational(self):
+        """``do={}`` must reduce to the legacy conditional — equal to the
+        full pre-action ``P(slo_violated=False | evidence)``."""
+        model = self._aurora_model()
+        vc = VFEComputer()
+        obs = {"network_quality": "low", "memory": "normal",
+               "cpu": "high", "delay": "high"}
+        p_legacy = self._legacy_p_clear(model, obs)
+        p_empty_do = vc._prob_slo_cleared(model, obs, do={})
+        assert p_empty_do == pytest.approx(p_legacy, abs=1e-9)
+
+    def test_intervened_key_overrides_evidence_duplicate(self):
+        """If the same variable appears in both ``do`` and ``evidence``, the
+        intervened value must win and the call must succeed."""
+        model = self._aurora_model()
+        vc = VFEComputer()
+        # cpu=high in evidence; do(cpu=normal) must override.
+        evidence_with_dup = {"network_quality": "low", "memory": "normal",
+                             "cpu": "high", "delay": "high"}
+        p_with_do = vc._prob_slo_cleared(model, evidence_with_dup, do={"cpu": "normal"})
+        # Reference: drop cpu from evidence, then query with do(cpu=normal).
+        clean_evidence = {k: v for k, v in evidence_with_dup.items() if k != "cpu"}
+        p_clean = vc._prob_slo_cleared(model, clean_evidence, do={"cpu": "normal"})
+        assert p_with_do == pytest.approx(p_clean, abs=1e-9)
+
+
 def run_all_tests():
     """Run all unit tests"""
     print("="*80)

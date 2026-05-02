@@ -81,13 +81,31 @@ class VFEComputer:
             patch = dict(action)
         return {k: v for k, v in patch.items() if k in model.model.nodes()}
 
-    def _prob_slo_cleared(self, model: EOSCModel, evidence: Dict[str, Any]) -> float:
-        """P(slo_violated = False | evidence), evidence must not fix slo_violated."""
+    def _prob_slo_cleared(
+        self,
+        model: EOSCModel,
+        evidence: Dict[str, Any],
+        do: Optional[Dict[str, Any]] = None,
+    ) -> float:
+        """
+        ``P(slo_violated = False | do(intervention), evidence)`` via Pearl
+        do-calculus (graph mutilation performed by ``pgmpy.CausalInference``).
+
+        ``evidence`` must not fix ``slo_violated``; any keys also present in
+        ``do`` are stripped from evidence so the intervention wins. When
+        ``do`` is empty, pgmpy short-circuits to a plain conditional query,
+        recovering pre-do-calculus behaviour.
+        """
+        do_set = dict(do or {})
         ev = self._filter_bn_evidence(model, evidence, drop_slo_violated=True)
+        ev = {k: v for k, v in ev.items() if k not in do_set}
         try:
-            qr = model.inference_engine.query(
+            qr = model.causal_inference.query(
                 variables=["slo_violated"],
+                do=do_set,
                 evidence=ev,
+                adjustment_set=[],
+                show_progress=False,
             )
             vals = np.asarray(qr.values).flatten()
             cpd = model.model.get_cpds("slo_violated")
@@ -109,24 +127,36 @@ class VFEComputer:
         """
         VFE with explicit pragmatic vs epistemic terms (CCTV BN).
 
-        - pragmatic: negative log P(SLO clear | patched stress) — prefer low.
-        - epistemic: mean KL between marginal beliefs before/after the patch — prefer low.
-        - vfe: epistemic - log P(clear), same ordering as ``compute_vfe`` (lower is better).
+        - pragmatic: ``-log P(SLO clear | do(action), evidence)`` — Pearl
+          interventional probability via graph mutilation; prefer low.
+        - epistemic: mean KL between predictive marginals before/after the
+          action — a belief-shift metric over the model's posterior; prefer low.
+        - vfe: epistemic + pragmatic (lower is better).
         """
         patch = self._resolve_action_patch(model, action)
-        hypo = evidence.copy()
-        hypo.update(patch)
 
         if self._is_cctv_slo_model(model):
-            old_e = self._filter_bn_evidence(model, evidence, drop_slo_violated=True)
-            new_e = self._filter_bn_evidence(model, hypo, drop_slo_violated=True)
-            p_clear = self._prob_slo_cleared(model, new_e)
+            obs_evidence = self._filter_bn_evidence(
+                model, evidence, drop_slo_violated=True
+            )
+            # Pragmatic term — interventional via do-calculus.
+            p_clear = self._prob_slo_cleared(model, obs_evidence, do=patch)
             pragmatic = -float(np.log(p_clear + self.epsilon))
-            epistemic = self._compute_complexity(model, new_e, old_e)
-            vfe = float(epistemic - np.log(p_clear + self.epsilon))
+            # Epistemic term — KL between predictive marginals before vs after
+            # the action. Build the post-action evidence by overlaying the
+            # patch (the patched node is fixed at its expected post-action
+            # state for downstream-marginal prediction).
+            post = {
+                **{k: v for k, v in obs_evidence.items() if k not in patch},
+                **patch,
+            }
+            epistemic = self._compute_complexity(model, post, obs_evidence)
+            vfe = float(epistemic + pragmatic)
             return {"vfe": vfe, "pragmatic": pragmatic, "epistemic": epistemic}
 
         # Legacy head: reuse averaged log SLO fulfillment as "accuracy"
+        hypo = evidence.copy()
+        hypo.update(patch)
         accuracy = self._compute_accuracy_legacy(model, hypo)
         epistemic = self._compute_complexity(model, hypo, evidence)
         vfe = float(epistemic - accuracy)
@@ -271,19 +301,20 @@ class VFEComputer:
         preferences: Optional[Dict[str, float]]
     ) -> float:
         """
-        Compute pragmatic value: Expected utility
-        
-        Measures expected SLO fulfillment under the action
+        Compute pragmatic value: expected utility ``P(SLO clear | do(action))``.
+
+        For the CCTV BN this routes through Pearl do-calculus (graph
+        mutilation) rather than observational conditioning.
         """
+        if self._is_cctv_slo_model(model):
+            patch = {k: v for k, v in (action or {}).items() if k in model.model.nodes()}
+            obs_evidence = self._filter_bn_evidence(
+                model, evidence, drop_slo_violated=True
+            )
+            return self._prob_slo_cleared(model, obs_evidence, do=patch)
+
         hypothetical_evidence = evidence.copy()
         hypothetical_evidence.update(action)
-
-        if self._is_cctv_slo_model(model):
-            ev = self._filter_bn_evidence(
-                model, hypothetical_evidence, drop_slo_violated=True
-            )
-            return self._prob_slo_cleared(model, ev)
-
         slo_variables = ['network', 'in_time', 'success', 'distance']
         total_value = 0.0
         n = 0
