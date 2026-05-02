@@ -113,11 +113,12 @@ def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault c
     ax.legend(loc="upper left", fontsize=7, framealpha=0.9)
 
 
-def apply_log_mttr(ax) -> None:
-    """Switch the MTTR axis to log-y so Rule-Based vs AIF/AURORA (~10x gap) is visible."""
-    ax.set_yscale("log")
-    ax.set_ylim(5e-4, 1e-1)
-    ax.grid(True, which="both", alpha=0.3, axis="y")
+def apply_linear_mttr(ax) -> None:
+    """Linear y-axis for MTTR. Rule-Based clusters near 1 ms, AIF/AURORA near
+    13 ms; the linear axis honestly shows the ~10x gap rather than hiding it
+    under a log axis. Consistent with all other panels (linear scale)."""
+    ax.set_ylim(-0.002, 0.05)
+    ax.grid(True, alpha=0.3, axis="y")
 
 
 def fmt_quartiles(a: np.ndarray) -> str:
@@ -146,9 +147,9 @@ def main() -> None:
     panel_vfe_by_fault(axes[0, 0], trials["AURORA"])
 
     panel_violin(axes[0, 1], mttr,
-                 ylabel="MTTR (s, log scale)",
+                 ylabel="MTTR (s)",
                  title="(b) Decision latency per agent")
-    apply_log_mttr(axes[0, 1])
+    apply_linear_mttr(axes[0, 1])
 
     panel_violin(axes[1, 0], cert,
                  ylabel=r"Posterior certainty $P_{\max}$",
@@ -180,9 +181,9 @@ def main() -> None:
     # (b) MTTR per agent (LOG y)
     f_b, ax_b = plt.subplots(figsize=(5.0, 3.5))
     panel_violin(ax_b, mttr,
-                 ylabel="MTTR (s, log scale)",
+                 ylabel="MTTR (s)",
                  title="Decision latency per agent")
-    apply_log_mttr(ax_b)
+    apply_linear_mttr(ax_b)
     f_b.tight_layout()
     out_b = RESULTS_DIR / "dist_mttr.pdf"
     f_b.savefig(out_b, bbox_inches="tight"); plt.close(f_b)
