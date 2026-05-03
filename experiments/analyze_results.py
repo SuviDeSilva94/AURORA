@@ -36,16 +36,21 @@ import scienceplots
 plt.style.use(["science", "ieee", "no-latex"])
 
 colors = ['#0C5DA5', '#00B945', '#FF9500', '#845B97', '#474747', '#9E9E9E']
-# Bumped beyond IEEE preset for two-column print readability (per reviewer feedback).
+# Aggressive font sizing for IEEE two-column print: figures are scaled to a
+# single column (~3.5"), so on-figure text needs to be visibly larger than the
+# caption (which renders at ~8pt) once scaled. These overrides intentionally
+# overwrite the SciencePlots IEEE preset (which uses ~7pt fonts).
 plt.rcParams.update({
     "figure.figsize": (12, 6),
     "figure.dpi": 300,
-    "font.size": 13,
-    "axes.titlesize": 15,
-    "axes.labelsize": 13,
-    "xtick.labelsize": 12,
-    "ytick.labelsize": 12,
-    "legend.fontsize": 12,
+    "font.size": 16,
+    "axes.titlesize": 18,
+    "axes.labelsize": 17,
+    "xtick.labelsize": 14,
+    "ytick.labelsize": 14,
+    "legend.fontsize": 14,
+    "axes.linewidth": 1.1,
+    "lines.linewidth": 1.8,
     "axes.prop_cycle": plt.cycler(color=colors),
 })
 
@@ -162,7 +167,7 @@ class ResultsAnalyzer:
         Create publication-quality comparison chart
         """
         fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-        fig.suptitle('Agent Performance Comparison', fontsize=16, fontweight='bold')
+        # Suptitle removed — caption is rendered by the LaTeX figure environment.
         
         # Prepare data
         agent_keys = list(self.results.keys())
@@ -201,7 +206,7 @@ class ResultsAnalyzer:
         ax1.set_xticks(x_pos)
         ax1.set_xticklabels(agents)
         ax1.set_ylabel('Repair correct rate (%)', fontweight='bold')
-        ax1.set_title('(a) Repair correct (Wilson 95% CI)', fontweight='bold')
+        # Subplot title removed — caption is rendered by the LaTeX figure environment.
         ax1.set_ylim(0, 100)
         ax1.axhline(y=80, color='red', linestyle='--', alpha=0.3, label='Target (80%)')
         for bar, pct in zip(bars1, y):
@@ -228,7 +233,7 @@ class ResultsAnalyzer:
         ax2.set_xticks(x_pos)
         ax2.set_xticklabels(agents)
         ax2.set_ylabel('Mean Time to Repair (seconds)', fontweight='bold')
-        ax2.set_title('(b) Mean Time to Repair (Lower is Better)', fontweight='bold')
+        # Subplot title removed — caption is rendered by the LaTeX figure environment.
         for bar in bars2:
             height = bar.get_height()
             ax2.text(bar.get_x() + bar.get_width()/2., height,
@@ -257,7 +262,7 @@ class ResultsAnalyzer:
         ax3.set_xticks(x_pos)
         ax3.set_xticklabels(agents)
         ax3.set_ylabel('Abstention Rate (%)', fontweight='bold')
-        ax3.set_title('(c) Abstention (Wilson 95% CI)', fontweight='bold')
+        # Subplot title removed — caption is rendered by the LaTeX figure environment.
         ymax = max(abst_y) if abst_y else 10.0
         ax3.set_ylim(0, max(ymax * 1.35, 10.0))
         for bar, pct in zip(bars3, abst_y):
@@ -295,7 +300,7 @@ class ResultsAnalyzer:
         ax4.set_xticks(x_pos)
         ax4.set_xticklabels(agents)
         ax4.set_ylabel('Destructive Action Rate (%)', fontweight='bold')
-        ax4.set_title('(d) Destructive (Wilson 95% CI)', fontweight='bold')
+        # Subplot title removed — caption is rendered by the LaTeX figure environment.
         dmax = max(dest_y) if dest_y else 0.0
         ax4.set_ylim(0, max(dmax * 1.35, 10.0))
         for bar, pct in zip(bars4, dest_y):
@@ -312,8 +317,8 @@ class ResultsAnalyzer:
         
         plt.tight_layout()
         
-        # Save figure
-        output_file = self.results_dir / "comparison_chart.png"
+        # Save figure (PDF for IEEE vector compliance)
+        output_file = self.results_dir / "comparison_chart.pdf"
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         logger.info(f"Saved comparison chart to {output_file}")
         
@@ -321,11 +326,11 @@ class ResultsAnalyzer:
     
     def plot_by_fault_type(self):
         """
-        Plot performance breakdown by fault type
+        Plot performance breakdown by fault type as TWO separate PDFs so the
+        LaTeX side can lay them out as subfigures (a) and (b) with captions
+        rendered by the document, not embedded in the figure.
         """
-        # Prepare data
         fault_data = []
-        
         for agent_name, metrics in self.results.items():
             for fault_type, fault_metrics in metrics['metrics_by_fault'].items():
                 fault_data.append({
@@ -334,45 +339,90 @@ class ResultsAnalyzer:
                     'Accuracy': fault_metrics['mean_accuracy'] * 100,
                     'MTTR': fault_metrics['mean_mttr']
                 })
-        
         df = pd.DataFrame(fault_data)
-        
-        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
-        fig.suptitle('Performance by Fault Type', fontsize=16, fontweight='bold')
-        
-        # Accuracy by fault type
+
+        # Common legend styling: one horizontal row inside the axes, no
+        # "Agent Type" title (saves a row), short shorthand labels, and a
+        # semi-transparent white background so bars remain visible behind.
+        # ncol=3 collapses the legend from a 4-row block into a single
+        # thin strip that fits in the headroom above the bars.
+        short_label = {
+            'AIF (No Gate)':       'AIF',
+            'AURORA (Proposed)':   'AURORA',
+            'Rule-Based':          'Rule-Based',
+        }
+        legend_common = dict(
+            ncol=3, columnspacing=1.2,
+            framealpha=0.85, facecolor='white', edgecolor='0.4',
+            fancybox=True, borderpad=0.35,
+            handletextpad=0.4, handlelength=1.5,
+        )
+
+        def _apply_short_labels(ax):
+            handles, labels = ax.get_legend_handles_labels()
+            labels = [short_label.get(l, l) for l in labels]
+            return handles, labels
+
+        # ---- (a) Accuracy by fault type ----
+        # 100% bars on Memory/Network Drop reach the top, so we lift the
+        # ceiling to 118 to give a single legend row clean headroom across
+        # the top of the plot.
+        fig_a, ax_a = plt.subplots(figsize=(7, 4.6))
         pivot_acc = df.pivot(index='Fault Type', columns='Agent', values='Accuracy')
+        pivot_acc.plot(kind='bar', ax=ax_a, rot=0)
+        ax_a.set_ylabel('Repair Accuracy (%)', fontweight='bold')
+        ax_a.set_xlabel('Fault Type', fontweight='bold')
+        h, l = _apply_short_labels(ax_a)
+        ax_a.legend(h, l, loc='upper center', **legend_common)
+        ax_a.set_ylim(0, 118)
+        ax_a.grid(True, alpha=0.3, axis='y')
+        fig_a.tight_layout()
+        out_a = self.results_dir / "fault_accuracy.pdf"
+        fig_a.savefig(out_a, dpi=300, bbox_inches='tight')
+        plt.close(fig_a)
+        logger.info(f"Saved fault accuracy plot to {out_a}")
+
+        # ---- (b) MTTR by fault type ----
+        # AIF and AURORA bars cluster at ~0.013s. ymax * 1.20 gives one
+        # legend-row of headroom across the top without the legend
+        # dominating the figure as a tall sidebar.
+        fig_b, ax_b = plt.subplots(figsize=(7, 4.6))
+        pivot_mttr = df.pivot(index='Fault Type', columns='Agent', values='MTTR')
+        pivot_mttr.plot(kind='bar', ax=ax_b, rot=0)
+        ax_b.set_ylabel('MTTR (seconds)', fontweight='bold')
+        ax_b.set_xlabel('Fault Type', fontweight='bold')
+        h, l = _apply_short_labels(ax_b)
+        ax_b.legend(h, l, loc='upper center', **legend_common)
+        ymax = float(pivot_mttr.values.max())
+        ax_b.set_ylim(0, ymax * 1.20)
+        ax_b.grid(True, alpha=0.3, axis='y')
+        fig_b.tight_layout()
+        out_b = self.results_dir / "fault_mttr.pdf"
+        fig_b.savefig(out_b, dpi=300, bbox_inches='tight')
+        plt.close(fig_b)
+        logger.info(f"Saved fault MTTR plot to {out_b}")
+
+        # Backwards-compat: combined figure (no suptitle, no per-panel titles).
+        fig, axes = plt.subplots(1, 2, figsize=(14, 4.8))
         pivot_acc.plot(kind='bar', ax=axes[0], rot=0)
         axes[0].set_ylabel('Repair Accuracy (%)', fontweight='bold')
-        axes[0].set_title('(a) Repair Accuracy by Fault Type', fontweight='bold')
-        axes[0].legend(
-            title='Agent Type',
-            loc='lower right',
-            framealpha=0.85, facecolor='white', edgecolor='0.7',
-            fancybox=True, borderpad=0.4,
-        )
-        axes[0].set_ylim(0, 100)
-
-        # MTTR by fault type
-        pivot_mttr = df.pivot(index='Fault Type', columns='Agent', values='MTTR')
+        axes[0].set_xlabel('Fault Type', fontweight='bold')
+        h, l = _apply_short_labels(axes[0])
+        axes[0].legend(h, l, loc='upper center', **legend_common)
+        axes[0].set_ylim(0, 118)
+        axes[0].grid(True, alpha=0.3, axis='y')
         pivot_mttr.plot(kind='bar', ax=axes[1], rot=0)
         axes[1].set_ylabel('MTTR (seconds)', fontweight='bold')
-        axes[1].set_title('(b) MTTR by Fault Type', fontweight='bold')
-        axes[1].legend(
-            title='Agent Type',
-            loc='upper right',
-            framealpha=0.85, facecolor='white', edgecolor='0.7',
-            fancybox=True, borderpad=0.4,
-        )
-
+        axes[1].set_xlabel('Fault Type', fontweight='bold')
+        h, l = _apply_short_labels(axes[1])
+        axes[1].legend(h, l, loc='upper center', **legend_common)
+        axes[1].set_ylim(0, ymax * 1.20)
+        axes[1].grid(True, alpha=0.3, axis='y')
         plt.tight_layout()
-
-        # Save figure (PDF for IEEE vector compliance)
         output_file = self.results_dir / "fault_type_breakdown.pdf"
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
-        logger.info(f"Saved fault type breakdown to {output_file}")
-        
-        plt.show()
+        plt.close(fig)
+        logger.info(f"Saved combined fault type breakdown to {output_file}")
     
     def statistical_significance_test(self):
         """
@@ -554,9 +604,11 @@ class ResultsAnalyzer:
                    label=f"VFE gate (F = {vfe_gate})")
         ax.set_xlabel("Variational Free Energy (F)", fontweight="bold")
         ax.set_ylabel("Trial Count", fontweight="bold")
-        ax.set_title("VFE Score Distribution by Fault Type (AURORA, 450 trials)",
-                     fontweight="bold")
-        ax.legend()
+        # Title removed — caption is rendered by the LaTeX figure environment.
+        ax.legend(
+            framealpha=0.85, facecolor="white", edgecolor="0.7",
+            fancybox=True, borderpad=0.4,
+        )
 
         # Annotate gate regions
         ymax = ax.get_ylim()[1]
@@ -566,7 +618,7 @@ class ResultsAnalyzer:
                 ha="left", color="crimson", fontsize=9, fontstyle="italic")
 
         plt.tight_layout()
-        out = self.results_dir / "vfe_distribution.png"
+        out = self.results_dir / "vfe_distribution.pdf"
         plt.savefig(out, dpi=300, bbox_inches="tight")
         logger.info(f"Saved VFE distribution to {out}")
         plt.show()
@@ -620,11 +672,14 @@ class ResultsAnalyzer:
 
         ax.set_xlabel("Certainty Score", fontweight="bold")
         ax.set_ylabel("Variational Free Energy (F)", fontweight="bold")
-        ax.set_title("Safety Gate Decision Space (AURORA, 450 trials)", fontweight="bold")
-        ax.legend(fontsize=9)
+        # Title removed — caption is rendered by the LaTeX figure environment.
+        ax.legend(
+            framealpha=0.85, facecolor="white", edgecolor="0.7",
+            fancybox=True, borderpad=0.4,
+        )
 
         plt.tight_layout()
-        out = self.results_dir / "safety_gate_scatter.png"
+        out = self.results_dir / "safety_gate_scatter.pdf"
         plt.savefig(out, dpi=300, bbox_inches="tight")
         logger.info(f"Saved safety gate scatter to {out}")
         plt.show()
@@ -708,7 +763,8 @@ class ResultsAnalyzer:
         ax.set_xticks(x)
         ax.set_xticklabels([fault_labels[f] for f in fault_types])
         ax.set_ylabel("Trial Count (out of 150)", fontweight="bold")
-        ax.set_title("Per-Fault Outcome Composition by Agent", fontweight="bold")
+        # Title removed — caption is rendered by the LaTeX figure environment
+        # so the figure body keeps the same visual weight across all plots.
         ax.set_ylim(-25, 165)
         # Legend on empty space outside plot, semi-transparent white background.
         ax.legend(
@@ -761,9 +817,11 @@ class ResultsAnalyzer:
         values  = [reason_counts[k] for k in reason_map if reason_counts[k] > 0]
         colors  = [reason_colors[k] for k in reason_map if reason_counts[k] > 0]
 
-        fig, ax = plt.subplots(figsize=(8, 5))
+        # Compact figure: only two bars to show, so a narrow canvas with
+        # wider bars uses the area better than a wide canvas with skinny bars.
+        fig, ax = plt.subplots(figsize=(6, 4.5))
         bars = ax.bar(range(len(labels)), values, color=colors, edgecolor="white",
-                      linewidth=0.8, width=0.5)
+                      linewidth=0.8, width=0.7)
 
         for bar, v in zip(bars, values):
             ax.text(bar.get_x() + bar.get_width() / 2,
@@ -773,8 +831,19 @@ class ResultsAnalyzer:
 
         ax.set_xticks(range(len(labels)))
         ax.set_xticklabels(labels)
-        ax.set_ylabel("Number of Trials", fontweight="bold")
-        ax.set_title("AURORA Abstention Trigger Breakdown (450 trials)", fontweight="bold")
+        # Y-axis label moved INSIDE the plot (upper-left) so the figure does
+        # not need extra horizontal padding on the left for an outside label.
+        ax.set_ylabel("")
+        ax.text(
+            0.015, 0.97, "Number of Trials",
+            transform=ax.transAxes,
+            ha="left", va="top",
+            fontweight="bold",
+            bbox=dict(boxstyle="round,pad=0.25",
+                      facecolor="white", edgecolor="0.6",
+                      alpha=0.85),
+        )
+        # Title removed — caption is rendered by the LaTeX figure environment.
         ax.set_ylim(0, max(values) * 1.2)
 
         plt.tight_layout()

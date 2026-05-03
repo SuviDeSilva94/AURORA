@@ -35,17 +35,20 @@ plt.style.use(["science", "ieee", "no-latex"])
 colors = ['#0C5DA5', '#00B945', '#FF9500', '#845B97', '#474747', '#9E9E9E']
 
 
-# Bumped fonts for IEEE two-column print readability (per reviewer feedback).
+# Aggressive font sizing for IEEE two-column print: caption ~8pt at print scale,
+# so axis text needs to render LARGER than the caption when scaled to the
+# column. These values are chosen so the included PDF, scaled to a single
+# IEEE column (~3.5"), still has tick labels >= 7pt and axis labels >= 8pt.
 mpl.rcParams.update({
-    "font.size":        15,
+    "font.size":        16,
     "axes.labelsize":   18,
-    "axes.titlesize":   15,
+    "axes.titlesize":   18,
     "xtick.labelsize":  16,
     "ytick.labelsize":  18,
-    "legend.fontsize":  13,
-    "figure.titlesize": 15,
-    "axes.linewidth":   0.9,
-    "lines.linewidth":  1.6,
+    "legend.fontsize":  15,
+    "figure.titlesize": 20,
+    "axes.linewidth":   1.1,
+    "lines.linewidth":  1.8,
     "axes.prop_cycle": plt.cycler(color=colors),
 })
 
@@ -76,8 +79,13 @@ def load_trials(path: Path) -> list[dict]:
         return json.load(f)["trials"]
 
 
-def panel_violin(ax, data_per_agent, ylabel, title, ylim=None):
-    """Generic violin-with-box-inside, one violin per agent."""
+def panel_violin(ax, data_per_agent, ylabel, title=None, ylim=None):
+    """Generic violin-with-box-inside, one violin per agent.
+
+    The `title` argument is accepted but intentionally ignored — panel
+    headings are rendered by the LaTeX caption, not embedded in the PDF
+    (per supervisor review).
+    """
     labels = list(data_per_agent.keys())
     data = [np.asarray(data_per_agent[k], dtype=float) for k in labels]
 
@@ -104,14 +112,17 @@ def panel_violin(ax, data_per_agent, ylabel, title, ylim=None):
     ax.set_xticks(np.arange(1, len(labels) + 1))
     ax.set_xticklabels(labels)
     ax.set_ylabel(ylabel)
-    # ax.set_title(title)
     if ylim is not None:
         ax.set_ylim(*ylim)
     ax.grid(False)
 
 
-def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault class (AURORA)"):
-    """AURORA only: VFE distribution split by injected fault class."""
+def panel_vfe_by_fault(ax, aurora_trials, title=None):
+    """AURORA only: VFE distribution split by injected fault class.
+
+    The `title` argument is accepted but intentionally ignored — panel
+    headings are rendered by the LaTeX caption, not embedded in the PDF.
+    """
     groups = {"network_drop": [], "cpu_spike": [], "memory_leak": []}
     for t in aurora_trials:
         f = t.get("fault_type")
@@ -138,9 +149,11 @@ def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault c
     ax.set_xticks([1, 2, 3])
     ax.set_xticklabels(["Network Drop", "CPU Spike", "Memory Leak"])
     ax.set_ylabel(r"VFE score $\mathcal{F}$")
-    # ax.set_title(title)
     ax.grid(False)
-    ax.legend(loc="upper left", framealpha=0.9)
+    ax.legend(
+        loc="upper left",
+        framealpha=0.85, facecolor="white", edgecolor="0.7", fancybox=True,
+    )
 
 
 def apply_linear_mttr(ax) -> None:
@@ -211,7 +224,7 @@ def main() -> None:
     score = {k: [t["repair_accuracy"] for t in v] for k, v in trials.items()}
 
     # ---------- Combined 2x2 master ----------
-    fig, axes = plt.subplots(2, 2, figsize=(13, 8.5))
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
 
     panel_vfe_by_fault(axes[0, 0], trials["AURORA"])
     axes[0, 0].margins(y=0.03)
