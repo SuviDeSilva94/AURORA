@@ -148,7 +148,7 @@ def panel_vfe_by_fault(ax, aurora_trials, title=None):
     ax.text(0.55, 3.95, r"$\mathcal{F}_{\rm th}=3.85$", color="red")
     ax.set_xticks([1, 2, 3])
     ax.set_xticklabels(["Network Drop", "CPU Spike", "Memory Leak"])
-    ax.set_ylabel(r"VFE score $\mathcal{F}$")
+    ax.set_ylabel(r"VFE Score $\mathcal{F}$")
     ax.grid(False)
     ax.legend(
         loc="upper left",
@@ -237,7 +237,7 @@ def main() -> None:
     remove_border_yticks(axes[0, 1])
 
     panel_violin(axes[1, 0], cert,
-                 ylabel=r"Posterior certainty $P_{\max}$",
+                 ylabel=r"Posterior Certainty $P_{\max}$",
                  title="(c) Posterior certainty per agent",
                  ylim=(-0.02, 1.05))
     axes[1, 0].axhline(0.70, color="blue", ls="--", lw=1.2, alpha=0.7)

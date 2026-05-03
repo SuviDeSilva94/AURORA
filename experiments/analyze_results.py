@@ -388,7 +388,7 @@ class ResultsAnalyzer:
         pivot_mttr = df.pivot(index='Fault Type', columns='Agent', values='MTTR')
         pivot_mttr.plot(kind='bar', ax=ax_b, rot=0)
         ax_b.set_xlabel("")
-        ax_b.set_ylabel('MTTR (seconds)')
+        ax_b.set_ylabel('MTTR (s)')
         h, l = _apply_short_labels(ax_b)
         ax_b.legend(h, l, loc='upper center', **legend_common)
         ymax = float(pivot_mttr.values.max())
@@ -410,7 +410,7 @@ class ResultsAnalyzer:
         axes[0].grid(True, alpha=0.3, axis='y')
         pivot_mttr.plot(kind='bar', ax=axes[1], rot=0)
         axes[1].set_xlabel("")
-        axes[1].set_ylabel('MTTR (seconds)')
+        axes[1].set_ylabel('MTTR (s)')
         h, l = _apply_short_labels(axes[1])
         axes[1].legend(h, l, loc='upper center', **legend_common)
         axes[1].set_ylim(0, ymax * 1.20)
@@ -665,7 +665,7 @@ class ResultsAnalyzer:
                 ha="left", va="bottom", fontsize=10, color="crimson", fontstyle="italic",
                 transform=ax.get_yaxis_transform())
 
-        ax.set_xlabel(r"Posterior certainty $P_{max}$")
+        ax.set_xlabel(r"Posterior Certainty $P_{max}$")
         ax.set_ylabel(r"VFE $\mathcal{F}$")
         # Title removed — caption is rendered by the LaTeX figure environment.
         ax.legend(
@@ -798,10 +798,10 @@ class ResultsAnalyzer:
             return
 
         reason_map = {
-            "high_vfe":           r"High VFE ($\mathcal{F}$ ≥ gate)",
-            "low_certainty":      r"Low Certainty ($\tau$ < gate)",
+            "high_vfe":           r"High VFE ($\mathcal{F}$ ≥ $\mathcal{F}_{\mathrm{th}}$)",
+            "low_certainty":      r"Low Certainty ($\tau$ < Gate)",
             "ambiguous_ranking":  "Ambiguous Ranking",
-            "none":               "Executed (no abstention)",
+            "none":               "Executed (No Abstention)",
         }
         reason_colors = {
             "high_vfe":           "#e65100",
