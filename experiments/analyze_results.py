@@ -41,16 +41,15 @@ colors = ['#0C5DA5', '#00B945', '#FF9500', '#845B97', '#474747', '#9E9E9E']
 # caption (which renders at ~8pt) once scaled. These overrides intentionally
 # overwrite the SciencePlots IEEE preset (which uses ~7pt fonts).
 plt.rcParams.update({
-    "figure.figsize": (12, 6),
-    "figure.dpi": 300,
-    "font.size": 16,
-    "axes.titlesize": 18,
-    "axes.labelsize": 17,
-    "xtick.labelsize": 14,
-    "ytick.labelsize": 14,
-    "legend.fontsize": 14,
-    "axes.linewidth": 1.1,
-    "lines.linewidth": 1.8,
+    "font.size":        16,
+    "axes.labelsize":   18,
+    "axes.titlesize":   18,
+    "xtick.labelsize":  16,
+    "ytick.labelsize":  18,
+    "legend.fontsize":  15,
+    "figure.titlesize": 20,
+    "axes.linewidth":   1.1,
+    "lines.linewidth":  1.8,
     "axes.prop_cycle": plt.cycler(color=colors),
 })
 
@@ -367,15 +366,14 @@ class ResultsAnalyzer:
         # 100% bars on Memory/Network Drop reach the top, so we lift the
         # ceiling to 118 to give a single legend row clean headroom across
         # the top of the plot.
-        fig_a, ax_a = plt.subplots(figsize=(7, 4.6))
+        fig_a, ax_a = plt.subplots(figsize=(6.0, 3.5))
         pivot_acc = df.pivot(index='Fault Type', columns='Agent', values='Accuracy')
         pivot_acc.plot(kind='bar', ax=ax_a, rot=0)
-        ax_a.set_ylabel('Repair Accuracy (%)', fontweight='bold')
-        ax_a.set_xlabel('Fault Type', fontweight='bold')
+        ax_a.set_xlabel("")
+        ax_a.set_ylabel('Repair Accuracy (%)')
         h, l = _apply_short_labels(ax_a)
         ax_a.legend(h, l, loc='upper center', **legend_common)
         ax_a.set_ylim(0, 118)
-        ax_a.grid(True, alpha=0.3, axis='y')
         fig_a.tight_layout()
         out_a = self.results_dir / "fault_accuracy.pdf"
         fig_a.savefig(out_a, dpi=300, bbox_inches='tight')
@@ -386,16 +384,15 @@ class ResultsAnalyzer:
         # AIF and AURORA bars cluster at ~0.013s. ymax * 1.20 gives one
         # legend-row of headroom across the top without the legend
         # dominating the figure as a tall sidebar.
-        fig_b, ax_b = plt.subplots(figsize=(7, 4.6))
+        fig_b, ax_b = plt.subplots(figsize=(6.0, 3.5))
         pivot_mttr = df.pivot(index='Fault Type', columns='Agent', values='MTTR')
         pivot_mttr.plot(kind='bar', ax=ax_b, rot=0)
-        ax_b.set_ylabel('MTTR (seconds)', fontweight='bold')
-        ax_b.set_xlabel('Fault Type', fontweight='bold')
+        ax_b.set_xlabel("")
+        ax_b.set_ylabel('MTTR (seconds)')
         h, l = _apply_short_labels(ax_b)
         ax_b.legend(h, l, loc='upper center', **legend_common)
         ymax = float(pivot_mttr.values.max())
         ax_b.set_ylim(0, ymax * 1.20)
-        ax_b.grid(True, alpha=0.3, axis='y')
         fig_b.tight_layout()
         out_b = self.results_dir / "fault_mttr.pdf"
         fig_b.savefig(out_b, dpi=300, bbox_inches='tight')
@@ -405,15 +402,15 @@ class ResultsAnalyzer:
         # Backwards-compat: combined figure (no suptitle, no per-panel titles).
         fig, axes = plt.subplots(1, 2, figsize=(14, 4.8))
         pivot_acc.plot(kind='bar', ax=axes[0], rot=0)
-        axes[0].set_ylabel('Repair Accuracy (%)', fontweight='bold')
-        axes[0].set_xlabel('Fault Type', fontweight='bold')
+        axes[0].set_xlabel("")
+        axes[0].set_ylabel('Repair Accuracy (%)')
         h, l = _apply_short_labels(axes[0])
         axes[0].legend(h, l, loc='upper center', **legend_common)
         axes[0].set_ylim(0, 118)
         axes[0].grid(True, alpha=0.3, axis='y')
         pivot_mttr.plot(kind='bar', ax=axes[1], rot=0)
-        axes[1].set_ylabel('MTTR (seconds)', fontweight='bold')
-        axes[1].set_xlabel('Fault Type', fontweight='bold')
+        axes[1].set_xlabel("")
+        axes[1].set_ylabel('MTTR (seconds)')
         h, l = _apply_short_labels(axes[1])
         axes[1].legend(h, l, loc='upper center', **legend_common)
         axes[1].set_ylim(0, ymax * 1.20)
@@ -642,7 +639,7 @@ class ResultsAnalyzer:
             "abstained": {"color": "#e65100", "marker": "^", "label": "Abstained (high VFE)"},
         }
 
-        fig, ax = plt.subplots(figsize=(9, 6))
+        fig, ax = plt.subplots(figsize=(7.0, 4.5))
 
         rng = np.random.default_rng(42)
 
@@ -661,17 +658,15 @@ class ResultsAnalyzer:
                    label=f"Certainty gate  τ = {cert_gate}")
 
         # Quadrant annotations — placed in corners away from dense clusters
-        ax.text(0.975, vfe_gate - 0.15, "Safe Zone  (execute)",
-                ha="right", va="top", fontsize=8.5, color="#2e7d32", fontstyle="italic",
-                transform=ax.get_yaxis_transform(),
-                bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.7))
-        ax.text(0.975, vfe_gate + 0.15, "High Uncertainty  (abstain)",
-                ha="right", va="bottom", fontsize=8.5, color="crimson", fontstyle="italic",
-                transform=ax.get_yaxis_transform(),
-                bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.7))
+        ax.text(0.075, vfe_gate - 0.15, "Safe Zone  (execute)",
+                ha="left", va="top", fontsize=10, color="#2e7d32", fontstyle="italic",
+                transform=ax.get_yaxis_transform())
+        ax.text(0.075, vfe_gate + 0.15, "High Uncertainty  (abstain)",
+                ha="left", va="bottom", fontsize=10, color="crimson", fontstyle="italic",
+                transform=ax.get_yaxis_transform())
 
-        ax.set_xlabel("Certainty Score", fontweight="bold")
-        ax.set_ylabel("Variational Free Energy (F)", fontweight="bold")
+        ax.set_xlabel(r"Posterior certainty $P_{max}$")
+        ax.set_ylabel(r"VFE $\mathcal{F}$")
         # Title removed — caption is rendered by the LaTeX figure environment.
         ax.legend(
             framealpha=0.85, facecolor="white", edgecolor="0.7",
@@ -720,9 +715,9 @@ class ResultsAnalyzer:
             "aurora":      "AURORA",
         }
         fault_labels = {
-            "network_drop": "Network\nDrop",
-            "cpu_spike":    "CPU\nSpike",
-            "memory_leak":  "Memory\nLeak",
+            "network_drop": "Network Drop",
+            "cpu_spike":    "CPU Spike",
+            "memory_leak":  "Memory Leak",
         }
 
         n_agents = len(agent_keys)
@@ -730,7 +725,7 @@ class ResultsAnalyzer:
         x        = np.arange(n_faults)
         width    = 0.25
 
-        fig, ax = plt.subplots(figsize=(13, 6))
+        fig, ax = plt.subplots(figsize=(6, 3.5))
 
         for i, ak in enumerate(agent_keys):
             bottoms = np.zeros(n_faults)
@@ -752,26 +747,35 @@ class ResultsAnalyzer:
             for j in range(n_faults):
                 ax.text(
                     x[j] + (i - 1) * width,
-                    -8,
+                    -1,
                     agent_labels[ak],
                     ha="center",
                     va="top",
-                    fontsize=7,
+                    fontsize=10,
                     rotation=45,
                 )
 
         ax.set_xticks(x)
         ax.set_xticklabels([fault_labels[f] for f in fault_types])
-        ax.set_ylabel("Trial Count (out of 150)", fontweight="bold")
+        
+        ax.tick_params(axis='x', which='both', length=0)
+
+        ax.set_ylabel("Trial Count")
         # Title removed — caption is rendered by the LaTeX figure environment
         # so the figure body keeps the same visual weight across all plots.
-        ax.set_ylim(-25, 165)
+        ax.set_ylim(-65, 205)
+        ax.set_yticks([0, 50, 100, 150])
+        ax.set_yticks([], minor=True)
         # Legend on empty space outside plot, semi-transparent white background.
+
         ax.legend(
             title="Outcome",
-            loc="center left", bbox_to_anchor=(1.02, 0.5),
-            framealpha=0.9, facecolor="white", edgecolor="0.7",
-            fancybox=True, borderpad=0.4,
+            loc="upper center", ncol=4, columnspacing=1.2,
+            framealpha=0.85, facecolor='white', edgecolor='0.4',
+            fancybox=True, borderpad=0.35,
+            handletextpad=0.4, handlelength=1.5,
+            fontsize=12,
+            title_fontsize=12,
         )
         ax.axhline(y=0, color="black", linewidth=0.6)
 
@@ -794,10 +798,10 @@ class ResultsAnalyzer:
             return
 
         reason_map = {
-            "high_vfe":           "High VFE\n(F ≥ gate)",
-            "low_certainty":      "Low Certainty\n(τ < gate)",
-            "ambiguous_ranking":  "Ambiguous\nRanking",
-            "none":               "Executed\n(no abstention)",
+            "high_vfe":           r"High VFE ($\mathcal{F}$ ≥ gate)",
+            "low_certainty":      r"Low Certainty ($\tau$ < gate)",
+            "ambiguous_ranking":  "Ambiguous Ranking",
+            "none":               "Executed (no abstention)",
         }
         reason_colors = {
             "high_vfe":           "#e65100",
@@ -819,30 +823,21 @@ class ResultsAnalyzer:
 
         # Compact figure: only two bars to show, so a narrow canvas with
         # wider bars uses the area better than a wide canvas with skinny bars.
-        fig, ax = plt.subplots(figsize=(6, 4.5))
+        fig, ax = plt.subplots(figsize=(6, 3.5))
         bars = ax.bar(range(len(labels)), values, color=colors, edgecolor="white",
                       linewidth=0.8, width=0.7)
 
         for bar, v in zip(bars, values):
             ax.text(bar.get_x() + bar.get_width() / 2,
                     bar.get_height() + 4,
-                    f"{v}\n({v/len(diag)*100:.1f}%)",
-                    ha="center", va="bottom", fontsize=10, fontweight="bold")
+                    f"{v} ({v/len(diag)*100:.1f}%)",
+                    ha="center", va="bottom", fontsize=12)
 
         ax.set_xticks(range(len(labels)))
         ax.set_xticklabels(labels)
         # Y-axis label moved INSIDE the plot (upper-left) so the figure does
         # not need extra horizontal padding on the left for an outside label.
-        ax.set_ylabel("")
-        ax.text(
-            0.015, 0.97, "Number of Trials",
-            transform=ax.transAxes,
-            ha="left", va="top",
-            fontweight="bold",
-            bbox=dict(boxstyle="round,pad=0.25",
-                      facecolor="white", edgecolor="0.6",
-                      alpha=0.85),
-        )
+        ax.set_ylabel("Number of Trials")
         # Title removed — caption is rendered by the LaTeX figure environment.
         ax.set_ylim(0, max(values) * 1.2)
 
