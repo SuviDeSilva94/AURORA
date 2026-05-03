@@ -26,17 +26,20 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-# Bumped fonts for IEEE two-column print readability (per reviewer feedback).
+# Aggressive font sizing for IEEE two-column print: caption ~8pt at print scale,
+# so axis text needs to render LARGER than the caption when scaled to the
+# column. These values are chosen so the included PDF, scaled to a single
+# IEEE column (~3.5"), still has tick labels >= 7pt and axis labels >= 8pt.
 mpl.rcParams.update({
-    "font.size":        12,
-    "axes.labelsize":   13,
-    "axes.titlesize":   13,
-    "xtick.labelsize":  11,
-    "ytick.labelsize":  11,
-    "legend.fontsize":  11,
-    "figure.titlesize": 14,
-    "axes.linewidth":   0.9,
-    "lines.linewidth":  1.6,
+    "font.size":        16,
+    "axes.labelsize":   18,
+    "axes.titlesize":   18,
+    "xtick.labelsize":  15,
+    "ytick.labelsize":  15,
+    "legend.fontsize":  15,
+    "figure.titlesize": 20,
+    "axes.linewidth":   1.1,
+    "lines.linewidth":  1.8,
 })
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
@@ -63,8 +66,13 @@ def load_trials(path: Path) -> list[dict]:
         return json.load(f)["trials"]
 
 
-def panel_violin(ax, data_per_agent, ylabel, title, ylim=None):
-    """Generic violin-with-box-inside, one violin per agent."""
+def panel_violin(ax, data_per_agent, ylabel, title=None, ylim=None):
+    """Generic violin-with-box-inside, one violin per agent.
+
+    The `title` argument is accepted but intentionally ignored — panel
+    headings are rendered by the LaTeX caption, not embedded in the PDF
+    (per supervisor review).
+    """
     labels = list(data_per_agent.keys())
     data = [np.asarray(data_per_agent[k], dtype=float) for k in labels]
 
@@ -90,14 +98,17 @@ def panel_violin(ax, data_per_agent, ylabel, title, ylim=None):
     ax.set_xticks(np.arange(1, len(labels) + 1))
     ax.set_xticklabels(labels)
     ax.set_ylabel(ylabel)
-    ax.set_title(title)
     if ylim is not None:
         ax.set_ylim(*ylim)
     ax.grid(True, alpha=0.3, axis="y")
 
 
-def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault class (AURORA)"):
-    """AURORA only: VFE distribution split by injected fault class."""
+def panel_vfe_by_fault(ax, aurora_trials, title=None):
+    """AURORA only: VFE distribution split by injected fault class.
+
+    The `title` argument is accepted but intentionally ignored — panel
+    headings are rendered by the LaTeX caption, not embedded in the PDF.
+    """
     groups = {"network_drop": [], "cpu_spike": [], "memory_leak": []}
     for t in aurora_trials:
         f = t.get("fault_type")
@@ -122,9 +133,11 @@ def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault c
     ax.set_xticks([1, 2, 3])
     ax.set_xticklabels(["Network Drop", "CPU Spike", "Memory Leak"])
     ax.set_ylabel(r"VFE score $\mathcal{F}$")
-    ax.set_title(title)
     ax.grid(True, alpha=0.3, axis="y")
-    ax.legend(loc="upper left", framealpha=0.9)
+    ax.legend(
+        loc="upper left",
+        framealpha=0.85, facecolor="white", edgecolor="0.7", fancybox=True,
+    )
 
 
 def apply_linear_mttr(ax) -> None:
@@ -156,7 +169,7 @@ def main() -> None:
     score = {k: [t["repair_accuracy"] for t in v] for k, v in trials.items()}
 
     # ---------- Combined 2x2 master ----------
-    fig, axes = plt.subplots(2, 2, figsize=(13, 8.5))
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
 
     panel_vfe_by_fault(axes[0, 0], trials["AURORA"])
 
@@ -185,7 +198,7 @@ def main() -> None:
 
     # ---------- Per-panel standalone PDFs ----------
     # (a) VFE by fault class
-    f_a, ax_a = plt.subplots(figsize=(5.0, 3.5))
+    f_a, ax_a = plt.subplots(figsize=(6.5, 4.5))
     panel_vfe_by_fault(ax_a, trials["AURORA"], title="VFE distribution by fault class (AURORA)")
     f_a.tight_layout()
     out_a = RESULTS_DIR / "dist_vfe_by_fault.pdf"
@@ -193,7 +206,7 @@ def main() -> None:
     print(f"Wrote {out_a}")
 
     # (b) MTTR per agent (LOG y)
-    f_b, ax_b = plt.subplots(figsize=(5.0, 3.5))
+    f_b, ax_b = plt.subplots(figsize=(6.5, 4.5))
     panel_violin(ax_b, mttr,
                  ylabel="MTTR (s)",
                  title="Decision latency per agent")
@@ -204,7 +217,7 @@ def main() -> None:
     print(f"Wrote {out_b}")
 
     # (c) Posterior certainty per agent
-    f_c, ax_c = plt.subplots(figsize=(5.5, 3.8))
+    f_c, ax_c = plt.subplots(figsize=(6.5, 4.5))
     panel_violin(ax_c, cert,
                  ylabel=r"Posterior certainty $P_{\max}$",
                  title="Posterior certainty per agent",
@@ -217,7 +230,7 @@ def main() -> None:
     print(f"Wrote {out_c}")
 
     # (d) Per-trial accuracy score per agent
-    f_d, ax_d = plt.subplots(figsize=(5.5, 3.8))
+    f_d, ax_d = plt.subplots(figsize=(6.5, 4.5))
     panel_violin(ax_d, score,
                  ylabel=r"Accuracy $S_i$",
                  title="Accuracy per agent",

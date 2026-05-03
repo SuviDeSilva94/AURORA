@@ -16,7 +16,21 @@ import json
 from pathlib import Path
 
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+
+# Aggressive font sizing for IEEE two-column print, matching the rest of the
+# figure pipeline (plot_distributions.py, analyze_results.py).
+mpl.rcParams.update({
+    "font.size":        16,
+    "axes.labelsize":   17,
+    "axes.titlesize":   18,
+    "xtick.labelsize":  14,
+    "ytick.labelsize":  14,
+    "legend.fontsize":  14,
+    "axes.linewidth":   1.1,
+    "lines.linewidth":  1.8,
+})
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
@@ -54,8 +68,9 @@ def metric_curves(trials: list[dict]) -> dict[str, np.ndarray]:
 
 
 def main() -> None:
-    fig, axes = plt.subplots(2, 2, figsize=(11, 7), sharex=True)
+    fig, axes = plt.subplots(2, 2, figsize=(14, 9), sharex=True)
     metric_names = ["Repair Accuracy", "Destructive Rate", "Abstention Rate", "Resolution Rate"]
+    panel_letters = ["(a)", "(b)", "(c)", "(d)"]
 
     agent_curves = {}
     for label, fname in AGENTS.items():
@@ -63,15 +78,20 @@ def main() -> None:
         trials = load_trials(path)
         agent_curves[label] = (len(trials), metric_curves(trials))
 
-    for ax, name in zip(axes.flat, metric_names):
+    for ax, name, letter in zip(axes.flat, metric_names, panel_letters):
         for label, (n, curves) in agent_curves.items():
-            ax.plot(np.arange(1, n + 1), curves[name], label=label, lw=1.6, **STYLES[label])
-        ax.set_title(name)
+            ax.plot(np.arange(1, n + 1), curves[name], label=label, lw=1.8, **STYLES[label])
+        # Panel letter only — subtitle text moves into the LaTeX caption.
+        ax.set_title(f"{letter} {name}")
         ax.set_xlabel("Trial index $N$")
         ax.set_ylabel(name)
         ax.set_ylim(-0.02, 1.02)
         ax.grid(True, alpha=0.3)
-        ax.legend(loc="best", fontsize=8, framealpha=0.9)
+        ax.legend(
+            loc="best",
+            framealpha=0.85, facecolor="white", edgecolor="0.7",
+            fancybox=True, borderpad=0.4,
+        )
 
     fig.tight_layout()
     out = RESULTS_DIR / "cumulative_metrics.pdf"
