@@ -23,7 +23,21 @@ import json
 from pathlib import Path
 
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+
+# Bumped fonts for IEEE two-column print readability (per reviewer feedback).
+mpl.rcParams.update({
+    "font.size":        12,
+    "axes.labelsize":   13,
+    "axes.titlesize":   13,
+    "xtick.labelsize":  11,
+    "ytick.labelsize":  11,
+    "legend.fontsize":  11,
+    "figure.titlesize": 14,
+    "axes.linewidth":   0.9,
+    "lines.linewidth":  1.6,
+})
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
 
@@ -74,9 +88,9 @@ def panel_violin(ax, data_per_agent, ylabel, title, ylim=None):
         flierprops={"marker": "x", "markersize": 3, "alpha": 0.6},
     )
     ax.set_xticks(np.arange(1, len(labels) + 1))
-    ax.set_xticklabels(labels, fontsize=8)
+    ax.set_xticklabels(labels)
     ax.set_ylabel(ylabel)
-    ax.set_title(title, fontsize=10)
+    ax.set_title(title)
     if ylim is not None:
         ax.set_ylim(*ylim)
     ax.grid(True, alpha=0.3, axis="y")
@@ -106,11 +120,11 @@ def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault c
     )
     ax.axhline(3.85, color="red", ls="--", lw=1.2, label=r"$\mathcal{F}_{\rm th}=3.85$")
     ax.set_xticks([1, 2, 3])
-    ax.set_xticklabels(["Network Drop", "CPU Spike", "Memory Leak"], fontsize=8)
-    ax.set_ylabel(r"VFE score $\mathcal{F}_{\rm score}$")
-    ax.set_title(title, fontsize=10)
+    ax.set_xticklabels(["Network Drop", "CPU Spike", "Memory Leak"])
+    ax.set_ylabel(r"VFE score $\mathcal{F}$")
+    ax.set_title(title)
     ax.grid(True, alpha=0.3, axis="y")
-    ax.legend(loc="upper left", fontsize=7, framealpha=0.9)
+    ax.legend(loc="upper left", framealpha=0.9)
 
 
 def apply_linear_mttr(ax) -> None:
@@ -142,7 +156,7 @@ def main() -> None:
     score = {k: [t["repair_accuracy"] for t in v] for k, v in trials.items()}
 
     # ---------- Combined 2x2 master ----------
-    fig, axes = plt.subplots(2, 2, figsize=(11, 7.5))
+    fig, axes = plt.subplots(2, 2, figsize=(13, 8.5))
 
     panel_vfe_by_fault(axes[0, 0], trials["AURORA"])
 
@@ -156,11 +170,11 @@ def main() -> None:
                  title="(c) Posterior certainty per agent",
                  ylim=(0, 1.05))
     axes[1, 0].axhline(0.70, color="blue", ls="--", lw=1.2, alpha=0.7)
-    axes[1, 0].text(0.55, 0.72, r"$\tau=0.70$", color="blue", fontsize=8)
+    axes[1, 0].text(0.55, 0.72, r"$\tau=0.70$", color="blue")
 
     panel_violin(axes[1, 1], score,
-                 ylabel=r"Per-trial score $S_i$",
-                 title="(d) Per-trial outcome score per agent",
+                 ylabel=r"Accuracy $S_i$",
+                 title="(d) Accuracy per agent",
                  ylim=(-0.05, 1.05))
 
     fig.tight_layout()
@@ -190,23 +204,23 @@ def main() -> None:
     print(f"Wrote {out_b}")
 
     # (c) Posterior certainty per agent
-    f_c, ax_c = plt.subplots(figsize=(5.0, 3.5))
+    f_c, ax_c = plt.subplots(figsize=(5.5, 3.8))
     panel_violin(ax_c, cert,
                  ylabel=r"Posterior certainty $P_{\max}$",
                  title="Posterior certainty per agent",
                  ylim=(0, 1.05))
     ax_c.axhline(0.70, color="blue", ls="--", lw=1.2, alpha=0.7)
-    ax_c.text(0.55, 0.72, r"$\tau=0.70$", color="blue", fontsize=8)
+    ax_c.text(0.55, 0.72, r"$\tau=0.70$", color="blue")
     f_c.tight_layout()
     out_c = RESULTS_DIR / "dist_certainty.pdf"
     f_c.savefig(out_c, bbox_inches="tight"); plt.close(f_c)
     print(f"Wrote {out_c}")
 
-    # (d) Per-trial score per agent
-    f_d, ax_d = plt.subplots(figsize=(5.0, 3.5))
+    # (d) Per-trial accuracy score per agent
+    f_d, ax_d = plt.subplots(figsize=(5.5, 3.8))
     panel_violin(ax_d, score,
-                 ylabel=r"Per-trial score $S_i$",
-                 title="Per-trial outcome score per agent",
+                 ylabel=r"Accuracy $S_i$",
+                 title="Accuracy per agent",
                  ylim=(-0.05, 1.05))
     f_d.tight_layout()
     out_d = RESULTS_DIR / "dist_score.pdf"

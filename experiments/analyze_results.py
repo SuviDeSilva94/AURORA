@@ -36,15 +36,16 @@ import scienceplots
 plt.style.use(["science", "ieee", "no-latex"])
 
 colors = ['#0C5DA5', '#00B945', '#FF9500', '#845B97', '#474747', '#9E9E9E']
+# Bumped beyond IEEE preset for two-column print readability (per reviewer feedback).
 plt.rcParams.update({
     "figure.figsize": (12, 6),
     "figure.dpi": 300,
-    "font.size": 12,
-    "axes.titlesize": 14,
-    "axes.labelsize": 12,
-    "xtick.labelsize": 11,
-    "ytick.labelsize": 11,
-    "legend.fontsize": 11,
+    "font.size": 13,
+    "axes.titlesize": 15,
+    "axes.labelsize": 13,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12,
+    "legend.fontsize": 12,
     "axes.prop_cycle": plt.cycler(color=colors),
 })
 
@@ -344,20 +345,30 @@ class ResultsAnalyzer:
         pivot_acc.plot(kind='bar', ax=axes[0], rot=0)
         axes[0].set_ylabel('Repair Accuracy (%)', fontweight='bold')
         axes[0].set_title('(a) Repair Accuracy by Fault Type', fontweight='bold')
-        axes[0].legend(title='Agent Type', loc='lower right')
+        axes[0].legend(
+            title='Agent Type',
+            loc='lower right',
+            framealpha=0.85, facecolor='white', edgecolor='0.7',
+            fancybox=True, borderpad=0.4,
+        )
         axes[0].set_ylim(0, 100)
-        
+
         # MTTR by fault type
         pivot_mttr = df.pivot(index='Fault Type', columns='Agent', values='MTTR')
         pivot_mttr.plot(kind='bar', ax=axes[1], rot=0)
         axes[1].set_ylabel('MTTR (seconds)', fontweight='bold')
         axes[1].set_title('(b) MTTR by Fault Type', fontweight='bold')
-        axes[1].legend(title='Agent Type', loc='upper right')
-        
+        axes[1].legend(
+            title='Agent Type',
+            loc='upper right',
+            framealpha=0.85, facecolor='white', edgecolor='0.7',
+            fancybox=True, borderpad=0.4,
+        )
+
         plt.tight_layout()
-        
-        # Save figure
-        output_file = self.results_dir / "fault_type_breakdown.png"
+
+        # Save figure (PDF for IEEE vector compliance)
+        output_file = self.results_dir / "fault_type_breakdown.pdf"
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         logger.info(f"Saved fault type breakdown to {output_file}")
         
@@ -695,15 +706,21 @@ class ResultsAnalyzer:
                 )
 
         ax.set_xticks(x)
-        ax.set_xticklabels([fault_labels[f] for f in fault_types], fontsize=11)
+        ax.set_xticklabels([fault_labels[f] for f in fault_types])
         ax.set_ylabel("Trial Count (out of 150)", fontweight="bold")
         ax.set_title("Per-Fault Outcome Composition by Agent", fontweight="bold")
         ax.set_ylim(-25, 165)
-        ax.legend(title="Outcome", loc="upper right")
+        # Legend on empty space outside plot, semi-transparent white background.
+        ax.legend(
+            title="Outcome",
+            loc="center left", bbox_to_anchor=(1.02, 0.5),
+            framealpha=0.9, facecolor="white", edgecolor="0.7",
+            fancybox=True, borderpad=0.4,
+        )
         ax.axhline(y=0, color="black", linewidth=0.6)
 
         plt.tight_layout()
-        out = self.results_dir / "outcome_composition.png"
+        out = self.results_dir / "outcome_composition.pdf"
         plt.savefig(out, dpi=300, bbox_inches="tight")
         logger.info(f"Saved outcome composition to {out}")
         plt.show()
@@ -755,13 +772,13 @@ class ResultsAnalyzer:
                     ha="center", va="bottom", fontsize=10, fontweight="bold")
 
         ax.set_xticks(range(len(labels)))
-        ax.set_xticklabels(labels, fontsize=10)
+        ax.set_xticklabels(labels)
         ax.set_ylabel("Number of Trials", fontweight="bold")
         ax.set_title("AURORA Abstention Trigger Breakdown (450 trials)", fontweight="bold")
         ax.set_ylim(0, max(values) * 1.2)
 
         plt.tight_layout()
-        out = self.results_dir / "abstention_triggers.png"
+        out = self.results_dir / "abstention_triggers.pdf"
         plt.savefig(out, dpi=300, bbox_inches="tight")
         logger.info(f"Saved abstention triggers to {out}")
         plt.show()
