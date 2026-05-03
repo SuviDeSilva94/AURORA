@@ -22,24 +22,37 @@ All output is scalable, text-selectable vector PDF.
 import json
 from pathlib import Path
 
+import scienceplots
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+
+# Apply the requested IEEE style with SciencePlots
+plt.style.use(["science", "ieee", "no-latex"])
+
+# Custom colors based on the reviewer's request
+colors = ['#0C5DA5', '#00B945', '#FF9500', '#845B97', '#474747', '#9E9E9E']
+
 
 # Bumped fonts for IEEE two-column print readability (per reviewer feedback).
 mpl.rcParams.update({
-    "font.size":        12,
-    "axes.labelsize":   13,
-    "axes.titlesize":   13,
-    "xtick.labelsize":  11,
-    "ytick.labelsize":  11,
-    "legend.fontsize":  11,
-    "figure.titlesize": 14,
+    "font.size":        15,
+    "axes.labelsize":   18,
+    "axes.titlesize":   15,
+    "xtick.labelsize":  16,
+    "ytick.labelsize":  18,
+    "legend.fontsize":  13,
+    "figure.titlesize": 15,
     "axes.linewidth":   0.9,
     "lines.linewidth":  1.6,
+    "axes.prop_cycle": plt.cycler(color=colors),
 })
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
+
+# Ensure consistent width/height for all standalone panels.
+FIGSIZE_PANEL = (5.0, 3.5)
 
 AGENTS = {
     "Rule-Based":    "rule_based_results.json",
@@ -75,7 +88,8 @@ def panel_violin(ax, data_per_agent, ylabel, title, ylim=None):
             arr = np.array([0.0])
         safe_data.append(arr)
 
-    parts = ax.violinplot(safe_data, showmeans=False, showmedians=False, showextrema=False)
+    parts = ax.violinplot(safe_data, showmeans=False,
+                          showmedians=False, showextrema=False)
     for body, label in zip(parts["bodies"], labels):
         body.set_facecolor(COLORS[label])
         body.set_alpha(0.45)
@@ -90,10 +104,10 @@ def panel_violin(ax, data_per_agent, ylabel, title, ylim=None):
     ax.set_xticks(np.arange(1, len(labels) + 1))
     ax.set_xticklabels(labels)
     ax.set_ylabel(ylabel)
-    ax.set_title(title)
+    # ax.set_title(title)
     if ylim is not None:
         ax.set_ylim(*ylim)
-    ax.grid(True, alpha=0.3, axis="y")
+    ax.grid(False)
 
 
 def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault class (AURORA)"):
@@ -106,7 +120,8 @@ def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault c
             groups[f].append(v)
     labels = ["network_drop", "cpu_spike", "memory_leak"]
     data = [np.asarray(groups[k], dtype=float) for k in labels]
-    parts = ax.violinplot(data, showmeans=False, showmedians=False, showextrema=False)
+    parts = ax.violinplot(data, showmeans=False,
+                          showmedians=False, showextrema=False)
     for body, label in zip(parts["bodies"], labels):
         body.set_facecolor(FAULT_COLORS[label])
         body.set_alpha(0.5)
@@ -118,12 +133,13 @@ def panel_vfe_by_fault(ax, aurora_trials, title="(a) VFE distribution by fault c
         medianprops={"color": "black", "linewidth": 1.4},
         flierprops={"marker": "x", "markersize": 3, "alpha": 0.6},
     )
-    ax.axhline(3.85, color="red", ls="--", lw=1.2, label=r"$\mathcal{F}_{\rm th}=3.85$")
+    ax.axhline(3.85, color="red", ls="--", lw=1.2)
+    ax.text(0.55, 3.95, r"$\mathcal{F}_{\rm th}=3.85$", color="red")
     ax.set_xticks([1, 2, 3])
     ax.set_xticklabels(["Network Drop", "CPU Spike", "Memory Leak"])
     ax.set_ylabel(r"VFE score $\mathcal{F}$")
-    ax.set_title(title)
-    ax.grid(True, alpha=0.3, axis="y")
+    # ax.set_title(title)
+    ax.grid(False)
     ax.legend(loc="upper left", framealpha=0.9)
 
 
@@ -132,7 +148,7 @@ def apply_linear_mttr(ax) -> None:
     13 ms; the linear axis honestly shows the ~10x gap rather than hiding it
     under a log axis. Consistent with all other panels (linear scale)."""
     ax.set_ylim(-0.002, 0.05)
-    ax.grid(True, alpha=0.3, axis="y")
+    ax.grid(False)
 
 
 def fmt_quartiles(a: np.ndarray) -> str:
@@ -145,12 +161,51 @@ def fmt_quartiles(a: np.ndarray) -> str:
     )
 
 
+def remove_border_yticks(ax) -> None:
+    """Prune problematic y-ticks for export-quality PDFs.
+
+    Goals:
+      1) Never show a y tick *on* the plot border (ticks at exactly ylim).
+      2) Never show negative y ticks.
+      3) Avoid minor y ticks that can still sit on the border.
+
+    We implement this by generating candidate ticks via a MaxNLocator with
+    end pruning, then filtering.
+    """
+    if ax.get_yscale() != "linear":
+        return
+
+    ax.yaxis.set_minor_locator(mticker.NullLocator())
+
+    ymin, ymax = ax.get_ylim()
+    span = max(abs(ymax - ymin), 1e-12)
+    atol = 1e-6 * span
+
+    locator = mticker.MaxNLocator(nbins=6, prune="both")
+    ticks = np.asarray(locator.tick_values(ymin, ymax), dtype=float)
+    ticks = ticks[np.isfinite(ticks)]
+
+    # No negative ticks (also normalizes -0.0 to 0.0).
+    ticks[np.isclose(ticks, 0.0, rtol=0.0, atol=atol)] = 0.0
+    ticks = ticks[ticks >= 0.0 - atol]
+
+    # No ticks exactly at the borders.
+    ticks = ticks[~np.isclose(ticks, ymin, rtol=0.0, atol=atol)]
+    ticks = ticks[~np.isclose(ticks, ymax, rtol=0.0, atol=atol)]
+
+    # Only override if we still have a sensible set.
+    if ticks.size >= 2:
+        ax.set_yticks(ticks)
+
+
 def main() -> None:
-    trials = {label: load_trials(RESULTS_DIR / fname) for label, fname in AGENTS.items()}
+    trials = {label: load_trials(RESULTS_DIR / fname)
+              for label, fname in AGENTS.items()}
 
     mttr = {k: [t["mttr_seconds"] for t in v] for k, v in trials.items()}
     cert = {
-        k: [t["certainty_score"] for t in v if t.get("certainty_score") is not None]
+        k: [t["certainty_score"]
+            for t in v if t.get("certainty_score") is not None]
         for k, v in trials.items()
     }
     score = {k: [t["repair_accuracy"] for t in v] for k, v in trials.items()}
@@ -159,23 +214,28 @@ def main() -> None:
     fig, axes = plt.subplots(2, 2, figsize=(13, 8.5))
 
     panel_vfe_by_fault(axes[0, 0], trials["AURORA"])
+    axes[0, 0].margins(y=0.03)
+    remove_border_yticks(axes[0, 0])
 
     panel_violin(axes[0, 1], mttr,
                  ylabel="MTTR (s)",
                  title="(b) Decision latency per agent")
     apply_linear_mttr(axes[0, 1])
+    remove_border_yticks(axes[0, 1])
 
     panel_violin(axes[1, 0], cert,
                  ylabel=r"Posterior certainty $P_{\max}$",
                  title="(c) Posterior certainty per agent",
-                 ylim=(0, 1.05))
+                 ylim=(-0.02, 1.05))
     axes[1, 0].axhline(0.70, color="blue", ls="--", lw=1.2, alpha=0.7)
     axes[1, 0].text(0.55, 0.72, r"$\tau=0.70$", color="blue")
+    remove_border_yticks(axes[1, 0])
 
     panel_violin(axes[1, 1], score,
                  ylabel=r"Accuracy $S_i$",
                  title="(d) Accuracy per agent",
                  ylim=(-0.05, 1.05))
+    remove_border_yticks(axes[1, 1])
 
     fig.tight_layout()
     out = RESULTS_DIR / "distributions.pdf"
@@ -185,46 +245,56 @@ def main() -> None:
 
     # ---------- Per-panel standalone PDFs ----------
     # (a) VFE by fault class
-    f_a, ax_a = plt.subplots(figsize=(5.0, 3.5))
-    panel_vfe_by_fault(ax_a, trials["AURORA"], title="VFE distribution by fault class (AURORA)")
+    f_a, ax_a = plt.subplots(figsize=FIGSIZE_PANEL)
+    panel_vfe_by_fault(
+        ax_a, trials["AURORA"], title="VFE distribution by fault class (AURORA)")
+    ax_a.margins(y=0.03)
+    remove_border_yticks(ax_a)
     f_a.tight_layout()
     out_a = RESULTS_DIR / "dist_vfe_by_fault.pdf"
-    f_a.savefig(out_a, bbox_inches="tight"); plt.close(f_a)
+    f_a.savefig(out_a, bbox_inches="tight")
+    plt.close(f_a)
     print(f"Wrote {out_a}")
 
     # (b) MTTR per agent (LOG y)
-    f_b, ax_b = plt.subplots(figsize=(5.0, 3.5))
+    f_b, ax_b = plt.subplots(figsize=FIGSIZE_PANEL)
     panel_violin(ax_b, mttr,
                  ylabel="MTTR (s)",
                  title="Decision latency per agent")
     apply_linear_mttr(ax_b)
+    remove_border_yticks(ax_b)
     f_b.tight_layout()
     out_b = RESULTS_DIR / "dist_mttr.pdf"
-    f_b.savefig(out_b, bbox_inches="tight"); plt.close(f_b)
+    f_b.savefig(out_b, bbox_inches="tight")
+    plt.close(f_b)
     print(f"Wrote {out_b}")
 
     # (c) Posterior certainty per agent
-    f_c, ax_c = plt.subplots(figsize=(5.5, 3.8))
+    f_c, ax_c = plt.subplots(figsize=FIGSIZE_PANEL)
     panel_violin(ax_c, cert,
                  ylabel=r"Posterior certainty $P_{\max}$",
                  title="Posterior certainty per agent",
-                 ylim=(0, 1.05))
+                 ylim=(-0.02, 1.05))
     ax_c.axhline(0.70, color="blue", ls="--", lw=1.2, alpha=0.7)
     ax_c.text(0.55, 0.72, r"$\tau=0.70$", color="blue")
+    remove_border_yticks(ax_c)
     f_c.tight_layout()
     out_c = RESULTS_DIR / "dist_certainty.pdf"
-    f_c.savefig(out_c, bbox_inches="tight"); plt.close(f_c)
+    f_c.savefig(out_c, bbox_inches="tight")
+    plt.close(f_c)
     print(f"Wrote {out_c}")
 
     # (d) Per-trial accuracy score per agent
-    f_d, ax_d = plt.subplots(figsize=(5.5, 3.8))
+    f_d, ax_d = plt.subplots(figsize=FIGSIZE_PANEL)
     panel_violin(ax_d, score,
                  ylabel=r"Accuracy $S_i$",
                  title="Accuracy per agent",
                  ylim=(-0.05, 1.05))
+    remove_border_yticks(ax_d)
     f_d.tight_layout()
     out_d = RESULTS_DIR / "dist_score.pdf"
-    f_d.savefig(out_d, bbox_inches="tight"); plt.close(f_d)
+    f_d.savefig(out_d, bbox_inches="tight")
+    plt.close(f_d)
     print(f"Wrote {out_d}")
 
     # ---------- Sanity print ----------
@@ -236,7 +306,8 @@ def main() -> None:
         )
         mt = np.asarray([x["mttr_seconds"] for x in t], dtype=float)
         cs = np.asarray(
-            [x["certainty_score"] for x in t if x.get("certainty_score") is not None],
+            [x["certainty_score"]
+                for x in t if x.get("certainty_score") is not None],
             dtype=float,
         )
         sc = np.asarray([x["repair_accuracy"] for x in t], dtype=float)
