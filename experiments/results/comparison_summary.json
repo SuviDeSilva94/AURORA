@@ -1,100 +1,100 @@
 {
   "rule_based": {
     "agent_type": "rule_based",
-    "num_trials": 450,
-    "mean_repair_accuracy": 0.2578888888888889,
-    "mean_mttr_seconds": 0.001196329328748915,
-    "resolution_rate": 0.45111111111111113,
+    "num_trials": 10002,
+    "mean_repair_accuracy": 0.26184263147370523,
+    "mean_mttr_seconds": 7.870525771249559e-05,
+    "resolution_rate": 0.46240751849630074,
     "abstention_rate": 0.0,
     "destructive_action_rate": 33.33333333333333,
-    "std_repair_accuracy": 0.22635139544357277,
-    "std_mttr_seconds": 0.0007475408366963431,
-    "num_correct": 203,
-    "num_incorrect": 97,
-    "num_destructive": 150,
+    "std_repair_accuracy": 0.22724724398593713,
+    "std_mttr_seconds": 2.209390446478009e-05,
+    "num_correct": 4625,
+    "num_incorrect": 2043,
+    "num_destructive": 3334,
     "num_abstained": 0,
     "num_no_action": 0,
     "metrics_by_fault": {
+      "memory_leak": {
+        "num_trials": 3334,
+        "mean_accuracy": 0.28552789442111576,
+        "mean_mttr": 7.78705543147352e-05
+      },
       "cpu_spike": {
-        "num_trials": 150,
+        "num_trials": 3334,
         "mean_accuracy": 0.5,
-        "mean_mttr": 0.001148220698038737
+        "mean_mttr": 8.088289511439754e-05
       },
       "network_drop": {
-        "num_trials": 150,
+        "num_trials": 3334,
         "mean_accuracy": 0.0,
-        "mean_mttr": 0.0012058242162068685
-      },
-      "memory_leak": {
-        "num_trials": 150,
-        "mean_accuracy": 0.27366666666666667,
-        "mean_mttr": 0.0012349430720011393
+        "mean_mttr": 7.736232370835404e-05
       }
     }
   },
   "aif_no_gate": {
     "agent_type": "aif_no_gate",
-    "num_trials": 450,
+    "num_trials": 10002,
     "mean_repair_accuracy": 0.6666666666666666,
-    "mean_mttr_seconds": 0.012954413096110026,
+    "mean_mttr_seconds": 0.0033990094671724224,
     "resolution_rate": 0.6666666666666666,
     "abstention_rate": 0.0,
     "destructive_action_rate": 33.33333333333333,
-    "std_repair_accuracy": 0.4719291781830087,
-    "std_mttr_seconds": 0.0032089459180691814,
-    "num_correct": 300,
+    "std_repair_accuracy": 0.4714280880711759,
+    "std_mttr_seconds": 0.0013752533643996798,
+    "num_correct": 6668,
     "num_incorrect": 0,
-    "num_destructive": 150,
+    "num_destructive": 3334,
     "num_abstained": 0,
     "num_no_action": 0,
     "metrics_by_fault": {
+      "memory_leak": {
+        "num_trials": 3334,
+        "mean_accuracy": 1.0,
+        "mean_mttr": 0.003281870571953419
+      },
       "cpu_spike": {
-        "num_trials": 150,
+        "num_trials": 3334,
         "mean_accuracy": 0.0,
-        "mean_mttr": 0.01282983938852946
+        "mean_mttr": 0.0033058101857716834
       },
       "network_drop": {
-        "num_trials": 150,
+        "num_trials": 3334,
         "mean_accuracy": 1.0,
-        "mean_mttr": 0.012611592610677083
-      },
-      "memory_leak": {
-        "num_trials": 150,
-        "mean_accuracy": 1.0,
-        "mean_mttr": 0.013421807289123535
+        "mean_mttr": 0.0036093476437921643
       }
     }
   },
   "aurora": {
     "agent_type": "aurora",
-    "num_trials": 450,
-    "mean_repair_accuracy": 0.6291111111111111,
-    "mean_mttr_seconds": 0.012856896188524035,
-    "resolution_rate": 0.36444444444444446,
-    "abstention_rate": 63.55555555555556,
+    "num_trials": 10002,
+    "mean_repair_accuracy": 0.619746050789842,
+    "mean_mttr_seconds": 0.003384901532838879,
+    "resolution_rate": 0.34103179364127173,
+    "abstention_rate": 65.89682063587283,
     "destructive_action_rate": 0.0,
-    "std_repair_accuracy": 0.3138724452751377,
-    "std_mttr_seconds": 0.0033652316644784477,
-    "num_correct": 164,
+    "std_repair_accuracy": 0.30824992083621217,
+    "std_mttr_seconds": 0.014525240089325745,
+    "num_correct": 3411,
     "num_incorrect": 0,
     "num_destructive": 0,
-    "num_abstained": 286,
+    "num_abstained": 6591,
     "num_no_action": 0,
     "metrics_by_fault": {
+      "memory_leak": {
+        "num_trials": 3334,
+        "mean_accuracy": 0.609238152369526,
+        "mean_mttr": 0.003026415648114274
+      },
       "cpu_spike": {
-        "num_trials": 150,
+        "num_trials": 3334,
         "mean_accuracy": 0.25,
-        "mean_mttr": 0.013119028409322104
+        "mean_mttr": 0.0032730624571344277
       },
       "network_drop": {
-        "num_trials": 150,
+        "num_trials": 3334,
         "mean_accuracy": 1.0,
-        "mean_mttr": 0.012560054461161296
-      },
-      "memory_leak": {
-        "num_trials": 150,
-        "mean_accuracy": 0.6373333333333333,
-        "mean_mttr": 0.012891605695088704
+        "mean_mttr": 0.003855226493267936
       }
     }
   }

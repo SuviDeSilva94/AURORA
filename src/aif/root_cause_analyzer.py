@@ -46,9 +46,23 @@ class RootCause:
     evidence_strength: float  # How strong is the evidence?
     explanation: str  # Why is this a root cause?
     ranking_score: float = 0.0  # Composite rank score (impact + evidence + topology)
-    
+    # Posterior probability that this variable is in its pathological state given
+    # the rest of the observation: P(C = pathological | E \ {C}). This is the
+    # paper's Pmax (Algorithm 1 line 8, Eq. 5) consumed by Gate 1.
+    posterior_prob: float = 0.0
+
     def __str__(self):
         return f"Root Cause: {self.variable}={self.value} (impact={self.impact_score:.2f})"
+
+
+# Pathological discrete state per BN variable. Matches discretization in
+# ``utils/bn_discretize.py`` and CPTs trained by ``generate_training_data``.
+PATHOLOGICAL_STATES: Dict[str, str] = {
+    "cpu": "high",
+    "memory": "high",
+    "delay": "high",
+    "network_quality": "low",
+}
 
 
 class RootCauseAnalyzer:
@@ -145,6 +159,10 @@ class RootCauseAnalyzer:
                 evidence=evidence,
             )
 
+            posterior_prob = self._compute_posterior_prob(
+                cause_var, observation
+            )
+
             root_cause = RootCause(
                 variable=cause_var,
                 value=observation[cause_var],
@@ -152,9 +170,10 @@ class RootCauseAnalyzer:
                 causal_paths=paths,
                 evidence_strength=evidence,
                 ranking_score=ranking_score,
+                posterior_prob=posterior_prob,
                 explanation=explanation
             )
-            
+
             root_causes.append(root_cause)
         
         # ═══════════════════════════════════════════════════════════════
@@ -166,6 +185,49 @@ class RootCauseAnalyzer:
         )
         
         return root_causes[:top_k]
+
+    def _compute_posterior_prob(
+        self,
+        cause_var: str,
+        observation: Dict[str, Any],
+    ) -> float:
+        """
+        P(cause_var = pathological_state | E \\ {cause_var})
+
+        This is the paper's Pmax — the actual posterior probability of the
+        candidate cause being in its pathological state, conditioned on all
+        other observed BN variables. Used by Gate 1.
+
+        We exclude ``cause_var`` itself from the conditioning evidence
+        (otherwise the query would be trivially 1.0); the symptom node and
+        downstream nodes remain in evidence so the posterior reflects the
+        ``P(C | Ot)`` form in Eq. (5).
+        """
+        try:
+            ev = {
+                k: v for k, v in observation.items()
+                if k in self.causal_graph.nodes() and k != cause_var
+            }
+            result = self.model.inference_engine.query(
+                variables=[cause_var],
+                evidence=ev,
+                show_progress=False,
+            )
+            states = list(result.state_names[cause_var])
+            target = PATHOLOGICAL_STATES.get(cause_var)
+            if target is not None and target in states:
+                idx = states.index(target)
+                return float(result.values[idx])
+            # Fallback: whatever the candidate cause's actual observed state is.
+            obs_state = observation.get(cause_var)
+            if obs_state in states:
+                return float(result.values[states.index(obs_state)])
+            return float(max(result.values))
+        except Exception as e:
+            logger.warning(
+                f"Could not compute posterior for {cause_var}: {e}"
+            )
+            return 0.5
 
     def _compute_ranking_score(
         self,

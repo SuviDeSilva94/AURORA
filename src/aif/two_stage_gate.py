@@ -28,6 +28,62 @@ ABSTAIN_AMBIGUOUS_RANKING = "ambiguous"
 ABSTAIN_SYMPHONY = "symphony_disagree"
 
 
+# Default SLO predicate thresholds — paper §IV-A (ϕ1..ϕ5).
+# Used by ``count_anomalies`` to derive |At| consumed by Eq. (11).
+DEFAULT_SLO_PREDICATES: Dict[str, float] = {
+    "delay_ms_max": 33.0,          # ϕ1 — Network Delay Agent
+    "cpu_pct_max": 85.0,           # ϕ2 — Node Load (CPU)
+    "memory_pct_max": 85.0,        # ϕ3 — Node Load (memory)
+    "fps_max": 35.0,               # ϕ4 — Camera Traffic Agent
+    "throughput_mbps_min": 12.8,   # ϕ5 ≈ 1.6 MB/s expressed in Mbps
+}
+
+
+def count_anomalies(
+    observation: Dict[str, Any],
+    predicates: Optional[Dict[str, float]] = None,
+) -> int:
+    """
+    Count violated SLO predicates from the four parallel observation agents
+    (paper §III-B-1, Fig. 1). Returns ``n = |At|`` consumed by Eq. (11).
+
+    The Node Load agent emits a single flag if either CPU or memory crosses
+    its threshold (matches Fig. 1's four-agent layout, not five flags).
+    """
+    p = {**DEFAULT_SLO_PREDICATES, **(predicates or {})}
+    n = 0
+    if observation.get("delay", 0.0) > p["delay_ms_max"]:
+        n += 1
+    if (
+        observation.get("cpu", 0.0) > p["cpu_pct_max"]
+        or observation.get("memory", 0.0) > p["memory_pct_max"]
+    ):
+        n += 1
+    if observation.get("fps", 0.0) > p["fps_max"]:
+        n += 1
+    # ``network`` is in Mbps in the simulator; ϕ5 = 1.6 MB/s ≈ 12.8 Mbps.
+    if observation.get("network", float("inf")) < p["throughput_mbps_min"]:
+        n += 1
+    return n
+
+
+def dynamic_tau_from_anomalies(
+    n: int,
+    tau_base: float,
+    tau_min: float,
+    lam: float,
+) -> float:
+    """
+    Paper Eq. (11): τ = max(τ_min, τ_base − λ · min(n−1, 2)).
+
+    Monotone and bounded; relaxes by ``lam`` per additional anomaly up to two
+    extras, then clips at ``tau_min``.
+    """
+    if n <= 1:
+        return tau_base
+    return max(tau_min, tau_base - lam * min(n - 1, 2))
+
+
 def ranking_margin_top1_top2(root_causes: List[Any]) -> Optional[float]:
     """
     Difference in composite RCA ranking between first and second hypotheses.
@@ -51,7 +107,28 @@ def is_ambiguous_ranking_margin(
 
 def certainty_from_top_cause(top_cause: Any, impact_calibration: float) -> float:
     """
-    Scalar certainty aligned with ExperimentRunner AURORA wrapper and coordinator scaling.
+    Posterior-based certainty for Gate 1: returns ``P(C_top | Ot)`` directly,
+    matching paper Algorithm 1 line 8 and Eq. (5).
+
+    The earlier 3-component heuristic (impact / evidence / path) saturated
+    against the discretized BN state space and produced only ~4 distinct
+    values across all trials, making Gate 1 inert by construction. The
+    posterior-based form varies continuously with evidence and lets the
+    dynamic-τ schedule (Eq. 11) exercise its design regime.
+
+    ``impact_calibration`` is retained for signature compatibility with
+    callers in baselines/coordinator wrappers; it is unused here.
+    """
+    del impact_calibration
+    return float(getattr(top_cause, "posterior_prob", 0.0))
+
+
+def heuristic_certainty_from_top_cause(
+    top_cause: Any, impact_calibration: float
+) -> float:
+    """
+    Legacy 3-component certainty kept for ablation/comparison only:
+        0.5 · min(1, impact/cal) + 0.3 · evidence + 0.2 · path_factor.
     """
     cal = max(impact_calibration, 1e-6)
     impact_f = min(1.0, top_cause.impact_score / cal)

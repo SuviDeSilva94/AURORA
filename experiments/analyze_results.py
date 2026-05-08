@@ -590,12 +590,17 @@ class ResultsAnalyzer:
                 edgecolor="white",
                 linewidth=0.4,
             )
-            # KDE overlay
+            # KDE overlay (skipped if values are degenerate / single-valued)
             from scipy.stats import gaussian_kde
-            kde = gaussian_kde(vfes, bw_method=0.3)
-            xs = np.linspace(min(vfes) - 0.2, max(vfes) + 0.2, 300)
-            scale = len(vfes) * (max(vfes) - min(vfes)) / 30
-            ax.plot(xs, kde(xs) * scale, color=color, linewidth=2)
+            v_arr = np.asarray(vfes, dtype=float)
+            if v_arr.size >= 2 and np.std(v_arr) > 1e-9:
+                try:
+                    kde = gaussian_kde(v_arr, bw_method=0.3)
+                    xs = np.linspace(v_arr.min() - 0.2, v_arr.max() + 0.2, 300)
+                    scale = v_arr.size * (v_arr.max() - v_arr.min()) / 30
+                    ax.plot(xs, kde(xs) * scale, color=color, linewidth=2)
+                except np.linalg.LinAlgError:
+                    pass  # singular covariance — fall back to histogram only
 
         ax.axvline(x=vfe_gate, color="crimson", linestyle="--", linewidth=1.8,
                    label=f"VFE gate (F = {vfe_gate})")

@@ -200,6 +200,46 @@ class FaultInjector:
         }
 
     @staticmethod
+    def inject_compound_fault(
+        fault_types: List[str],
+        severity: float = 0.7,
+    ) -> Dict[str, Any]:
+        """
+        Overlay multiple single-fault profiles to produce concurrent SLO
+        violations (|At| > 1). Used to exercise the dynamic-τ schedule
+        (Eq. 11) — the regime under which Gate 1 was designed to fire.
+
+        Per metric we take the worst (most pathological) value across the
+        constituent profiles, so all targeted predicates trigger together.
+        """
+        single_injectors = {
+            "network_drop": FaultInjector.inject_network_drop,
+            "cpu_spike": FaultInjector.inject_cpu_spike,
+            "memory_leak": FaultInjector.inject_memory_leak,
+        }
+        selected = [single_injectors[t](severity) for t in fault_types if t in single_injectors]
+        if not selected:
+            return FaultInjector.generate_normal_observation()
+
+        overlay = dict(selected[0])
+        for p in selected[1:]:
+            overlay["cpu"] = max(overlay["cpu"], p["cpu"])
+            overlay["memory"] = max(overlay["memory"], p["memory"])
+            overlay["delay"] = max(overlay["delay"], p["delay"])
+            overlay["network"] = min(overlay["network"], p["network"])
+            overlay["fps"] = min(overlay["fps"], p["fps"])
+            overlay["bitrate"] = min(overlay["bitrate"], p["bitrate"])
+        if overlay["network"] < 40:
+            overlay["network_quality"] = "low"
+        elif overlay["network"] < 70:
+            overlay["network_quality"] = "medium"
+        else:
+            overlay["network_quality"] = "high"
+        overlay["slo_violated"] = True
+        overlay["compound_types"] = list(fault_types)
+        return overlay
+
+    @staticmethod
     def inject_overloaded_streams(severity: float = 0.7) -> Dict[str, Any]:
         """
         Inject overloaded streams (too many cameras/streams).
@@ -459,6 +499,15 @@ class ExperimentRunner:
             "symphony_views": result.get("symphony_views"),
             "aurora_rca_mode": result.get("aurora_rca_mode"),
             "online_cpt_delta": online_cpt_delta,
+            "anomaly_count": result.get("anomaly_count"),
+            "effective_tau": result.get("effective_tau"),
+            "tau_base": result.get("tau_base"),
+            "tau_min": result.get("tau_min"),
+            "tau_lambda": result.get("tau_lambda"),
+            "vfe_threshold": result.get("vfe_threshold"),
+            "gate1_fired": result.get("gate1_fired"),
+            "gate2_fired": result.get("gate2_fired"),
+            "compound_types": observation.get("compound_types"),
         })
         
         logger.info(
@@ -526,8 +575,8 @@ class ExperimentRunner:
                         collector=collector,
                     )
                     
-                    # Small delay between trials
-                    time.sleep(0.1)
+                    # No artificial inter-trial delay (was 100ms; removed so
+                    # large-N runs complete in reasonable time).
             
             # Save results for this agent
             output_file = self.output_dir / f"{agent_name}_results.json"
@@ -556,6 +605,8 @@ class ExperimentRunner:
         vfe_threshold: float = 3.85,
         impact_calibration: Optional[float] = None,
         ranking_margin_threshold: float = 0.04,
+        tau_min: float = 0.50,
+        tau_lambda: float = 0.15,
     ) -> Any:
         """
         Create and train AURORA agent (certainty, ranking margin, VFE threshold).
@@ -601,6 +652,9 @@ class ExperimentRunner:
                 self.gate = gate
                 self.agent_type = "aurora"
                 self.certainty_threshold = certainty_threshold
+                self.tau_min = tau_min
+                self.tau_lambda = tau_lambda
+                self.vfe_threshold = vfe_threshold
                 self.impact_calibration = impact_calibration
                 self.ranking_margin_threshold = ranking_margin_threshold
                 self.rca_mode = rca_mode
@@ -657,6 +711,16 @@ class ExperimentRunner:
 
                 obs_bn = discretize_observation_like_training(observation)
 
+                # |At| from the four parallel observation agents (paper §III-B-1)
+                n_anomalies = tsg.count_anomalies(observation)
+                # Eq. (11): τ = max(τ_min, τ_base − λ · min(n−1, 2))
+                effective_tau = tsg.dynamic_tau_from_anomalies(
+                    n_anomalies,
+                    self.certainty_threshold,
+                    self.tau_min,
+                    self.tau_lambda,
+                )
+
                 if self.rca_mode == "symphony":
                     dx = tsg.diagnose_slo_violation_symphony(
                         self.rca,
@@ -709,6 +773,10 @@ class ExperimentRunner:
                     acted: bool,
                     action_name: Optional[str],
                 ) -> Dict[str, Any]:
+                    gate1_fired = (
+                        abstain_reason == tsg.ABSTAIN_LOW_CERTAINTY
+                    )
+                    gate2_fired = abstain_reason == tsg.ABSTAIN_HIGH_VFE
                     return {
                         'action_taken': action_name,
                         'root_cause': top_cause.variable,
@@ -725,6 +793,14 @@ class ExperimentRunner:
                         'symphony_views': dx.get("symphony_views"),
                         'symphony_disagree': dx.get("symphony_disagree", False),
                         'aurora_rca_mode': self.rca_mode,
+                        'anomaly_count': n_anomalies,
+                        'effective_tau': effective_tau,
+                        'tau_base': self.certainty_threshold,
+                        'tau_min': self.tau_min,
+                        'tau_lambda': self.tau_lambda,
+                        'vfe_threshold': self.vfe_threshold,
+                        'gate1_fired': gate1_fired,
+                        'gate2_fired': gate2_fired,
                     }
 
                 try:
@@ -748,16 +824,14 @@ class ExperimentRunner:
                         None,
                     )
 
-                # Dynamic margin logic for AURORA in experiments
-                criticality_score = 1
-                if observation.get('cpu', 0) > 90:
-                    criticality_score += 1
-                if observation.get('memory', 0) > 90:
-                    criticality_score += 1
-                if observation.get('network', 100) < 20:
-                    criticality_score += 1
-
-                effective_margin = max(0.02, self.ranking_margin_threshold - 0.04 * (criticality_score - 1))
+                # Ranking-margin schedule mirrors Eq. (11): looser margin under
+                # higher anomaly counts, since posterior concentration drops as
+                # |At| grows. Capped at two extras for symmetry with τ.
+                effective_margin = max(
+                    0.02,
+                    self.ranking_margin_threshold
+                    - 0.04 * min(max(n_anomalies - 1, 0), 2),
+                )
 
                 if tsg.is_ambiguous_ranking_margin(
                     root_causes, effective_margin
@@ -771,20 +845,8 @@ class ExperimentRunner:
                         None,
                     )
 
-                # Dynamic Threshold Logic for AURORA in experiments
-                dynamic_threshold = self.certainty_threshold
-                criticality_score = 1
-                if observation.get('cpu', 0) > 90:
-                    criticality_score += 1
-                if observation.get('memory', 0) > 90:
-                    criticality_score += 1
-                if observation.get('network', 100) < 20:
-                    criticality_score += 1
-
-                if criticality_score > 1:
-                    dynamic_threshold = max(0.50, self.certainty_threshold - (0.15 * min(criticality_score - 1, 2)))
-
-                if certainty < dynamic_threshold:
+                # Gate 1: posterior certainty against the dynamic τ from Eq. (11)
+                if certainty < effective_tau:
                     return _payload(
                         vfe, vfp, vfe_ep, tsg.ABSTAIN_LOW_CERTAINTY, False, None
                     )
@@ -866,7 +928,7 @@ class ExperimentRunner:
 
 # Main execution (50-100 trials for thesis; default 50 per fault type)
 if __name__ == "__main__":
-    runner = ExperimentRunner(num_trials=150, output_dir="experiments/results")
+    runner = ExperimentRunner(num_trials=3334, output_dir="experiments/results")
     results = runner.run_experiment()
     
     print("\n" + "="*70)
