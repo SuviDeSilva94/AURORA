@@ -768,8 +768,8 @@ class ResultsAnalyzer:
         ax.set_ylabel("Trial Count")
         # Title removed — caption is rendered by the LaTeX figure environment
         # so the figure body keeps the same visual weight across all plots.
-        ax.set_ylim(-65, 205)
-        ax.set_yticks([0, 50, 100, 150])
+        ax.set_ylim(-1400, 4500)
+        ax.set_yticks([0, 1000, 2000, 3000, 4000])
         ax.set_yticks([], minor=True)
         # Legend on empty space outside plot, semi-transparent white background.
 
@@ -803,10 +803,10 @@ class ResultsAnalyzer:
             return
 
         reason_map = {
-            "high_vfe":           r"High VFE ($\mathcal{F}$ ≥ $\mathcal{F}_{\mathrm{th}}$)",
-            "low_certainty":      r"Low Certainty ($\tau$ < Gate)",
+            "high_vfe":           r"High VFE",
+            "low_certainty":      r"Low Certainty",
             "ambiguous_ranking":  "Ambiguous Ranking",
-            "none":               "Executed (No Abstention)",
+            "none":               "No Abstention",
         }
         reason_colors = {
             "high_vfe":           "#e65100",
