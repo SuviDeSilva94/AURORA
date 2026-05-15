@@ -362,6 +362,8 @@ class ResultsAnalyzer:
             labels = [short_label.get(l, l) for l in labels]
             return handles, labels
 
+        _fault_hatches = ["", "//", "\\\\"]
+
         # ---- (a) Accuracy by fault type ----
         # 100% bars on Memory/Network Drop reach the top, so we lift the
         # ceiling to 118 to give a single legend row clean headroom across
@@ -369,6 +371,10 @@ class ResultsAnalyzer:
         fig_a, ax_a = plt.subplots(figsize=(6.0, 3.5))
         pivot_acc = df.pivot(index='Fault Type', columns='Agent', values='Accuracy')
         pivot_acc.plot(kind='bar', ax=ax_a, rot=0)
+        for container, hatch in zip(ax_a.containers, _fault_hatches):
+            for patch in container.patches:
+                patch.set_hatch(hatch)
+                patch.set_edgecolor("0.3")
         ax_a.set_xlabel("")
         ax_a.set_ylabel('Repair Accuracy (%)')
         h, l = _apply_short_labels(ax_a)
@@ -387,6 +393,10 @@ class ResultsAnalyzer:
         fig_b, ax_b = plt.subplots(figsize=(6.0, 3.5))
         pivot_mttr = df.pivot(index='Fault Type', columns='Agent', values='MTTR')
         pivot_mttr.plot(kind='bar', ax=ax_b, rot=0)
+        for container, hatch in zip(ax_b.containers, _fault_hatches):
+            for patch in container.patches:
+                patch.set_hatch(hatch)
+                patch.set_edgecolor("0.3")
         ax_b.set_xlabel("")
         ax_b.set_ylabel('MTTR (s)')
         h, l = _apply_short_labels(ax_b)
@@ -402,6 +412,10 @@ class ResultsAnalyzer:
         # Backwards-compat: combined figure (no suptitle, no per-panel titles).
         fig, axes = plt.subplots(1, 2, figsize=(14, 4.8))
         pivot_acc.plot(kind='bar', ax=axes[0], rot=0)
+        for container, hatch in zip(axes[0].containers, _fault_hatches):
+            for patch in container.patches:
+                patch.set_hatch(hatch)
+                patch.set_edgecolor("0.3")
         axes[0].set_xlabel("")
         axes[0].set_ylabel('Repair Accuracy (%)')
         h, l = _apply_short_labels(axes[0])
@@ -409,6 +423,10 @@ class ResultsAnalyzer:
         axes[0].set_ylim(0, 118)
         axes[0].grid(True, alpha=0.3, axis='y')
         pivot_mttr.plot(kind='bar', ax=axes[1], rot=0)
+        for container, hatch in zip(axes[1].containers, _fault_hatches):
+            for patch in container.patches:
+                patch.set_hatch(hatch)
+                patch.set_edgecolor("0.3")
         axes[1].set_xlabel("")
         axes[1].set_ylabel('MTTR (s)')
         h, l = _apply_short_labels(axes[1])
@@ -698,6 +716,12 @@ class ResultsAnalyzer:
             "destructive": "#f44336",
             "incorrect":   "#9E9E9E",
         }
+        outcome_hatches = {
+            "correct":     "",
+            "abstained":   "//",
+            "destructive": "\\\\",
+            "incorrect":   "xx",
+        }
 
         # Build count table: agent → fault → outcome → count
         counts: Dict[str, Dict[str, Dict[str, int]]] = {}
@@ -742,8 +766,9 @@ class ResultsAnalyzer:
                     width,
                     bottom=bottoms,
                     color=color,
+                    hatch=outcome_hatches[oc],
                     label=oc.capitalize() if i == 0 else "_nolegend_",
-                    edgecolor="white",
+                    edgecolor="0.3",
                     linewidth=0.5,
                 )
                 bottoms += vals
@@ -814,6 +839,12 @@ class ResultsAnalyzer:
             "ambiguous_ranking":  "#6A1B9A",
             "none":               "#2e7d32",
         }
+        reason_hatches = {
+            "high_vfe":           "//",
+            "low_certainty":      "\\\\",
+            "ambiguous_ranking":  "xx",
+            "none":               "",
+        }
 
         reason_counts = {k: 0 for k in reason_map}
         for t in diag:
@@ -822,15 +853,16 @@ class ResultsAnalyzer:
                 r = "none"
             reason_counts[r] += 1
 
-        labels  = [reason_map[k]   for k in reason_map if reason_counts[k] > 0]
+        labels  = [reason_map[k]    for k in reason_map if reason_counts[k] > 0]
         values  = [reason_counts[k] for k in reason_map if reason_counts[k] > 0]
         colors  = [reason_colors[k] for k in reason_map if reason_counts[k] > 0]
+        hatches = [reason_hatches[k] for k in reason_map if reason_counts[k] > 0]
 
         # Compact figure: only two bars to show, so a narrow canvas with
         # wider bars uses the area better than a wide canvas with skinny bars.
         fig, ax = plt.subplots(figsize=(6, 3.5))
-        bars = ax.bar(range(len(labels)), values, color=colors, edgecolor="white",
-                      linewidth=0.8, width=0.7)
+        bars = ax.bar(range(len(labels)), values, color=colors, hatch=hatches,
+                      edgecolor="0.3", linewidth=0.8, width=0.7)
 
         for bar, v in zip(bars, values):
             ax.text(bar.get_x() + bar.get_width() / 2,
