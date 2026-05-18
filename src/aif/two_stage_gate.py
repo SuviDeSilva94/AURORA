@@ -9,11 +9,19 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 # Maps BN root variable to healing action name (matches AURORA / coordinator).
+# Both workloads share this map; variable names are unique across workloads.
 ROOT_VARIABLE_TO_ACTION: Dict[str, str] = {
+    # CCTV workload
     "network_quality": "offload_to_fog",
     "cpu": "restart",
     "memory": "scale_up",
     "delay": "reduce_load",
+    # Motor-monitoring workload
+    "vibration": "vibration_alert",
+    "current": "thermal_throttle",
+    "temperature": "coolant_restart",
+    "bearing_status": "vibration_alert",
+    "motor_health": "motor_restart",
 }
 
 # Standardized abstain labels for metrics and trial JSON.
@@ -37,6 +45,34 @@ DEFAULT_SLO_PREDICATES: Dict[str, float] = {
     "fps_max": 35.0,               # ϕ4 — Camera Traffic Agent
     "throughput_mbps_min": 12.8,   # ϕ5 ≈ 1.6 MB/s expressed in Mbps
 }
+
+# SLO predicate thresholds for the industrial-IoT motor-monitoring workload.
+# Each predicate maps to one of the three parallel observation agents.
+MOTOR_SLO_PREDICATES: Dict[str, float] = {
+    "vibration_rms_max": 4.0,          # mm/s — Vibration Agent
+    "current_pct_nominal_max": 130.0,  # % of rated current — Current Agent
+    "temperature_C_max": 85.0,         # °C — Thermal Agent
+}
+
+
+def count_motor_anomalies(
+    observation: Dict[str, Any],
+    predicates: Optional[Dict[str, float]] = None,
+) -> int:
+    """
+    Count violated SLO predicates from the three parallel motor-monitoring
+    observation agents (Vibration, Current, Thermal). Returns ``n = |At|``
+    consumed by the dynamic threshold schedule of Eq. (11).
+    """
+    p = {**MOTOR_SLO_PREDICATES, **(predicates or {})}
+    n = 0
+    if observation.get("vibration_rms", 0.0) > p["vibration_rms_max"]:
+        n += 1
+    if observation.get("current_pct", 0.0) > p["current_pct_nominal_max"]:
+        n += 1
+    if observation.get("temperature_C", 0.0) > p["temperature_C_max"]:
+        n += 1
+    return n
 
 
 def count_anomalies(

@@ -16,11 +16,18 @@ from loguru import logger
 from .bayesian_network import EOSCModel
 
 # Hypothetical post-mitigation stress states (discrete BN labels) per healing action.
+# Both workloads share this dictionary because action names are unique across workloads.
 HEALING_ACTION_HYPOTHESIS: Dict[str, Dict[str, str]] = {
+    # CCTV workload actions
     "restart": {"cpu": "normal", "delay": "normal"},
     "scale_up": {"memory": "normal", "cpu": "normal"},
     "offload_to_fog": {"network_quality": "high", "delay": "normal"},
     "reduce_load": {"cpu": "normal", "delay": "normal"},
+    # Motor-monitoring workload actions
+    "vibration_alert": {"vibration": "normal", "bearing_status": "ok"},
+    "thermal_throttle": {"current": "normal", "temperature": "normal"},
+    "coolant_restart": {"temperature": "normal"},
+    "motor_restart": {"motor_health": "healthy"},
 }
 
 

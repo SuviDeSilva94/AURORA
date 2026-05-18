@@ -406,6 +406,53 @@ def refit_cctv_benchmark_cpts(data: List[Dict[str, Any]]) -> EOSCModel:
     return fit_eosc_cctv_benchmark_dag(data)
 
 
+# Fixed DAG for industrial-IoT motor monitoring (second workload):
+# current → temperature (electrical → thermal coupling)
+# vibration → bearing_status (mechanical degradation pathway)
+# {temperature, bearing_status} → motor_health (latent fault state)
+# {motor_health, current, vibration, temperature} → slo_violated (direct + mediated)
+MOTOR_BENCHMARK_EDGES = [
+    ("current", "temperature"),
+    ("vibration", "bearing_status"),
+    ("temperature", "motor_health"),
+    ("bearing_status", "motor_health"),
+    ("motor_health", "slo_violated"),
+    ("current", "slo_violated"),
+    ("vibration", "slo_violated"),
+    ("temperature", "slo_violated"),
+]
+
+
+def fit_eosc_motor_benchmark_dag(data: List[Dict[str, Any]]) -> EOSCModel:
+    """
+    Fit CPTs on the fixed motor-monitoring DAG (parameters only).
+
+    Structurally distinct from the CCTV benchmark: two latent mediating
+    variables (``bearing_status``, ``motor_health``) sit between the directly
+    observed signals (``current``, ``vibration``, ``temperature``) and the
+    symptom (``slo_violated``). This produces a richer Markov blanket for the
+    symptom (four parents through three observation routes) and tests whether
+    the dual-gated mechanism generalises to fault distributions where the BN
+    must reason across multi-hop mediating paths.
+    """
+    learner = BayesianNetworkLearner()
+    df = pd.DataFrame(data)
+    df = learner._discretize_data(df)
+    model = BayesianNetwork(MOTOR_BENCHMARK_EDGES)
+    model.fit(df, estimator=MaximumLikelihoodEstimator)
+    markov_blanket = learner._compute_markov_blankets(model)
+    logger.info(
+        f"Fitted motor benchmark BN: {len(MOTOR_BENCHMARK_EDGES)} edges, "
+        f"{len(df)} rows"
+    )
+    return EOSCModel(model=model, markov_blanket=markov_blanket)
+
+
+def refit_motor_benchmark_cpts(data: List[Dict[str, Any]]) -> EOSCModel:
+    """Refit CPTs on the fixed motor benchmark DAG (structure unchanged)."""
+    return fit_eosc_motor_benchmark_dag(data)
+
+
 def max_abs_cpd_delta(before: EOSCModel, after: EOSCModel) -> float:
     """
     Maximum absolute difference between matching CPT entries (same nodes and shapes).
